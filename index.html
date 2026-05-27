@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wanderer's Folly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════ MAIN MENU ═══════════════════════════════ -->
+  <div id="screen-menu" class="screen active">
+    <div class="menu-bg">
+      <div class="menu-particles" id="menuParticles"></div>
+    </div>
+    <div class="menu-content">
+      <div class="menu-title-block">
+        <div class="menu-subtitle">an oddly philosophical</div>
+        <h1 class="menu-title">Wanderer's<br/>Folly</h1>
+        <div class="menu-tagline">— a journey through questionable decisions —</div>
+      </div>
+      <nav class="menu-nav">
+        <button class="menu-btn" id="btnNewGame">
+          <span class="btn-icon">✦</span> New Game
+        </button>
+        <button class="menu-btn" id="btnContinue">
+          <span class="btn-icon">◈</span> Continue
+        </button>
+      </nav>
+      <div class="menu-version">v2.0 — made with existential dread</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ AVATAR EDITOR ═══════════════════════════ -->
+  <div id="screen-avatar" class="screen">
+    <div class="avatar-editor-wrap">
+      <div class="avatar-panel-left">
+        <h2 class="panel-title">Who Are You?</h2>
+        <p class="panel-hint">Choose wisely. Or don't. The world doesn't care.</p>
+
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="charName" maxlength="16" placeholder="Yon Wanderer" autocomplete="off" />
+        </div>
+
+        <div class="form-group">
+          <label>Class</label>
+          <div class="class-picker" id="classPicker">
+            <div class="class-card active" data-class="knight">
+              <div class="class-icon">⚔️</div>
+              <div class="class-name">Knight</div>
+              <div class="class-desc">High HP, slow but sturdy</div>
+            </div>
+            <div class="class-card" data-class="rogue">
+              <div class="class-icon">🗡️</div>
+              <div class="class-name">Rogue</div>
+              <div class="class-desc">Fast, sneaky, glass cannon</div>
+            </div>
+            <div class="class-card" data-class="mage">
+              <div class="class-icon">🔮</div>
+              <div class="class-name">Mage</div>
+              <div class="class-desc">Magic power, low defense</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Skin Tone</label>
+          <div class="color-row" id="skinPicker">
+            <div class="color-dot active" data-skin="0" style="background:#FDDBB4"></div>
+            <div class="color-dot" data-skin="1" style="background:#E8B88A"></div>
+            <div class="color-dot" data-skin="2" style="background:#C68642"></div>
+            <div class="color-dot" data-skin="3" style="background:#8D5524"></div>
+            <div class="color-dot" data-skin="4" style="background:#4A2912"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Hair Color</label>
+          <div class="color-row" id="hairPicker">
+            <div class="color-dot active" data-hair="0" style="background:#2C1810"></div>
+            <div class="color-dot" data-hair="1" style="background:#8B4513"></div>
+            <div class="color-dot" data-hair="2" style="background:#DAA520"></div>
+            <div class="color-dot" data-hair="3" style="background:#C0C0C0"></div>
+            <div class="color-dot" data-hair="4" style="background:#CC0000"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Outfit Color</label>
+          <div class="color-row" id="outfitPicker">
+            <div class="color-dot active" data-outfit="0" style="background:#2E4A7A"></div>
+            <div class="color-dot" data-outfit="1" style="background:#7A2E2E"></div>
+            <div class="color-dot" data-outfit="2" style="background:#2E7A4A"></div>
+            <div class="color-dot" data-outfit="3" style="background:#6B2E7A"></div>
+            <div class="color-dot" data-outfit="4" style="background:#4A4A2E"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="avatar-panel-right">
+        <div class="avatar-preview-frame">
+          <div class="avatar-preview" id="avatarPreview">
+            <canvas id="avatarCanvas" width="120" height="160"></canvas>
+          </div>
+          <div class="avatar-preview-name" id="previewName">Yon Wanderer</div>
+          <div class="avatar-preview-class" id="previewClass">Knight</div>
+        </div>
+
+        <div class="stats-preview" id="statsPreview">
+          <div class="stat-row"><span>HP</span><div class="stat-bar"><div class="stat-fill hp-fill" id="statHp" style="width:80%"></div></div><span id="statHpVal">120</span></div>
+          <div class="stat-row"><span>ATK</span><div class="stat-bar"><div class="stat-fill atk-fill" id="statAtk" style="width:50%"></div></div><span id="statAtkVal">15</span></div>
+          <div class="stat-row"><span>DEF</span><div class="stat-bar"><div class="stat-fill def-fill" id="statDef" style="width:70%"></div></div><span id="statDefVal">20</span></div>
+          <div class="stat-row"><span>SPD</span><div class="stat-bar"><div class="stat-fill spd-fill" id="statSpd" style="width:30%"></div></div><span id="statSpdVal">8</span></div>
+        </div>
+
+        <button class="enter-btn" id="btnEnterWorld">Enter World ✦</button>
+        <button class="back-btn" id="btnBackMenu">← Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ GAME SCREEN ═══════════════════════════════ -->
+  <div id="screen-game" class="screen">
+
+    <!-- HUD Top -->
+    <div class="hud-top">
+      <div class="hud-left">
+        <div class="hud-avatar-mini" id="hudAvatarMini"></div>
+        <div class="hud-info">
+          <div class="hud-name" id="hudName">Wanderer</div>
+          <div class="hud-hp-bar"><div class="hud-hp-fill" id="hudHpFill"></div></div>
+          <div class="hud-hp-text" id="hudHpText">100/100</div>
+        </div>
+      </div>
+      <div class="hud-center">
+        <div class="hud-biome" id="hudBiome">Forest</div>
+        <!-- Day counter shown here -->
+        <div class="hud-day" id="hudDay">Day 1</div>
+      </div>
+      <div class="hud-right">
+        <div class="hud-gold">💰 <span id="hudGold">50</span></div>
+        <button class="hud-btn" id="btnOpenShop">Shop</button>
+        <button class="hud-btn" id="btnOpenInventory">Gear</button>
+        <button class="hud-btn" id="btnToggleMusic" title="Toggle Music">♫</button>
+        <button class="hud-btn" id="btnToggleSfx" title="Toggle SFX">♪</button>
+      </div>
+    </div>
+
+    <!-- Game World: the viewport clips the world, world-grid moves inside it -->
+    <div class="world-container" id="worldContainer">
+      <!-- Rain overlay — inside world-container so it covers the tile area -->
+      <canvas class="rain-canvas" id="rainCanvas"></canvas>
+      <!-- The actual tile grid; positioned absolutely, moved by camera offset -->
+      <div class="world-grid" id="worldGrid"></div>
+    </div>
+
+    <!-- Controls hint -->
+    <div class="controls-hint">WASD / Arrow keys to move &nbsp;·&nbsp; <span id="weatherHint"></span></div>
+
+    <!-- DIALOG BOX -->
+    <div class="dialog-overlay" id="dialogOverlay" style="display:none">
+      <div class="dialog-box" id="dialogBox">
+        <div class="dialog-portrait" id="dialogPortrait"></div>
+        <div class="dialog-content">
+          <div class="dialog-speaker" id="dialogSpeaker"></div>
+          <div class="dialog-text" id="dialogText"></div>
+          <div class="dialog-choices" id="dialogChoices"></div>
+          <button class="dialog-next" id="dialogNext">Continue ▶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHOP OVERLAY -->
+    <div class="shop-overlay" id="shopOverlay" style="display:none">
+      <div class="shop-panel">
+        <div class="shop-header">
+          <h2>⚒ The Wandering Merchant</h2>
+          <span class="shop-gold">💰 <span id="shopGoldDisplay">50</span></span>
+          <button class="shop-close" id="btnCloseShop">✕</button>
+        </div>
+        <div class="shop-tabs">
+          <button class="shop-tab active" data-tab="weapons">⚔ Weapons</button>
+          <button class="shop-tab" data-tab="armor">🛡 Armor</button>
+          <button class="shop-tab" data-tab="items">🧪 Items</button>
+        </div>
+        <div class="shop-items" id="shopItems"></div>
+      </div>
+    </div>
+
+    <!-- INVENTORY OVERLAY -->
+    <div class="inv-overlay" id="invOverlay" style="display:none">
+      <div class="inv-panel">
+        <div class="shop-header">
+          <h2>🎒 Equipped Gear</h2>
+          <button class="shop-close" id="btnCloseInv">✕</button>
+        </div>
+        <div class="inv-slots" id="invSlots"></div>
+      </div>
+    </div>
+
+  </div><!-- end screen-game -->
+
+  <script src="game.js"></script>
+</body>
+</html>
