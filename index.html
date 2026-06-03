@@ -143,8 +143,13 @@
       </div>
       <div class="hud-right">
         <div class="hud-gold">💰 <span id="hudGold">50</span></div>
+        <div class="hud-energy-wrap" title="Energy">
+          ⚡ <div class="hud-energy-bar"><div class="hud-energy-fill" id="energyBar"></div></div>
+          <span id="energyText" class="hud-energy-text">120/120</span>
+        </div>
         <button class="hud-btn" id="btnOpenShop">Shop</button>
         <button class="hud-btn" id="btnOpenInventory">Gear</button>
+        <button class="hud-btn hud-btn-quest" id="btnOpenQuests" title="Quest Log">📜 Quests</button>
         <button class="hud-btn" id="btnToggleMusic" title="Toggle Music">♫</button>
         <button class="hud-btn" id="btnToggleSfx" title="Toggle SFX">♪</button>
       </div>
@@ -200,6 +205,36 @@
         </div>
         <div class="inv-slots" id="invSlots"></div>
       </div>
+    </div>
+
+    <!-- INTRO OVERLAY -->
+    <div class="intro-overlay" id="introOverlay" style="display:none">
+      <div class="intro-box">
+        <div class="intro-title">✦ Wanderer's Folly ✦</div>
+        <div class="intro-text" id="introText"></div>
+        <div style="color:var(--text-dim);font-size:.8rem;margin-top:16px;">Press Space or Enter to continue</div>
+      </div>
+    </div>
+
+    <!-- QUEST LOG OVERLAY -->
+    <div class="shop-overlay" id="questOverlay" style="display:none">
+      <div class="shop-panel" style="max-width:480px">
+        <div class="shop-header">
+          <h2>📜 Quest Log</h2>
+          <button class="shop-close" id="btnCloseQuests">✕</button>
+        </div>
+        <div id="questLogPanel" style="padding:16px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px;"></div>
+      </div>
+    </div>
+
+    <!-- FADE OVERLAY -->
+    <div id="fadeOverlay" style="position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:200;transition:opacity 0.5s ease;"></div>
+
+    <!-- SLEEP MESSAGE -->
+    <div id="sleepMsg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:210;align-items:center;justify-content:center;flex-direction:column;gap:20px;">
+      <div style="font-family:var(--font-title);font-size:2rem;color:var(--gold);letter-spacing:4px;">✦ Resting ✦</div>
+      <div class="sleep-day" style="font-family:var(--font-title);font-size:1.2rem;color:var(--text-dim);letter-spacing:2px;">Day 2</div>
+      <div style="color:var(--text-dim);font-style:italic;font-size:.9rem;">Your wounds heal. Your energy returns.</div>
     </div>
 
   </div><!-- end screen-game -->

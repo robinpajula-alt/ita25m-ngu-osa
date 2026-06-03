@@ -25,7 +25,7 @@
   --font-title:   'Cinzel', serif;
   --font-body:    'Crimson Text', serif;
   /* tile size used both in CSS and JS (JS reads --tile-size) */
-  --tile-size:    80px;
+  --tile-size:    96px;
 }
 
 /* ── Reset ────────────────────────────────── */
@@ -238,8 +238,7 @@ input  { font-family: var(--font-body); }
   flex: 1;
   position: relative;
   overflow: hidden;
-  background: #3a6b30;
-  isolation: isolate;
+  background: #0d160d; /* base green so no black seeps through */
 }
 
 /* Rain canvas sits on top of the world, fills the viewport */
@@ -262,7 +261,6 @@ input  { font-family: var(--font-body); }
   top: 0; left: 0;
   display: grid;
   gap: 0;
-  overflow: visible;
   /* grid-template columns/rows set dynamically by JS */
 }
 
@@ -276,12 +274,36 @@ input  { font-family: var(--font-body); }
   user-select: none;
   overflow: visible;
   image-rendering: pixelated;
-  box-sizing: content-box;
-  margin: -1px;
-  padding: 1px;
+  flex-shrink: 0;
 }
 
-/* ── Forest tree: dark ground + tree sprite extending upward ── */
+/* ── Grass / Plains ── */
+.tile-grass {
+  background-image: url('assets/grass.png');
+  background-size: 135% 135%;
+  background-position: center;
+  background-color: #3a6b30;
+}
+.tile-grass-edge {
+  background-image: url('assets/dark.png');
+  background-size: 135% 135%;
+  background-position: center;
+  background-color: #2a5a22;
+}
+
+/* ── Tree tiles: dark ground + tree sprite on top ── */
+.tile-tree {
+  background-image: url('assets/dark.png');
+  background-size: 110% 110%;
+  background-position: center;
+  background-color: #2a5a22;
+}
+.tile-dark-tree {
+  background-image: url('assets/dark.png');
+  background-size: 110% 110%;
+  background-position: center;
+  background-color: #1a2e18;
+}
 .tile-tree::after,
 .tile-dark-tree::after {
   content: '';
@@ -299,33 +321,6 @@ input  { font-family: var(--font-body); }
   z-index: 2;
 }
 
-/* ── Grass / Plains ── */
-.tile-grass {
-  background-image: url('assets/grass.png');
-  background-size: 135% 135%;
-  background-position: center;
-  background-color: #44a030;
-  filter: brightness(0.6
-  );
-}
-
-/* ── Grass edge + tree ground = dark grass ── */
-.tile-grass-edge,
-.tile-tree {
-  background-image: url('assets/dark.png');
-  background-size: 120% 120%;
-  background-position: center;
-  background-color: #2a5a22;
-}
-
-/* ── Dark Forest: dark grass only ── */
-.tile-dark-tree {
-  background-image: url('assets/dark.png');
-  background-size: 110% 110%;
-  background-position: center;
-  background-color: #1a2e18;
-}
-
 /* ── Desert / Sand ── */
 .tile-sand,
 .tile-sand-dark,
@@ -337,77 +332,145 @@ input  { font-family: var(--font-body); }
 }
 .tile-sand-dark { filter: brightness(0.88); }
 
-/* ── Village ── */
-.tile-village {
-  background: #4a3c28; /* worn earth */
-}
-/* Cobblestone feel */
+/* ── Village / Path ── */
+.tile-village { background: #4a3c28; }
 .tile-village::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    repeating-linear-gradient(
-      0deg, transparent 0, transparent 13px,
-      rgba(0,0,0,.15) 13px, rgba(0,0,0,.15) 14px
-    ),
-    repeating-linear-gradient(
-      90deg, transparent 0, transparent 13px,
-      rgba(0,0,0,.10) 13px, rgba(0,0,0,.10) 14px
-    );
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg,transparent 0,transparent 13px,rgba(0,0,0,.15) 13px,rgba(0,0,0,.15) 14px),
+              repeating-linear-gradient(90deg,transparent 0,transparent 13px,rgba(0,0,0,.10) 13px,rgba(0,0,0,.10) 14px);
   pointer-events: none;
 }
-
-/* ── Path ── */
-.tile-path {
-  background: #786040;
-}
+.tile-path { background: #786040; }
 .tile-path::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0, transparent 16px,
-    rgba(0,0,0,.08) 16px, rgba(0,0,0,.08) 17px
-  );
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg,transparent 0,transparent 16px,rgba(0,0,0,.08) 16px,rgba(0,0,0,.08) 17px);
   pointer-events: none;
 }
 
 /* ── Walkable hover ── */
-.tile-walkable:hover { filter: brightness(1.18); cursor: default; }
+.tile-walkable:hover { filter: brightness(1.15); cursor: default; }
 
-/* ── NPC tile: show a small glowing dot marker ── */
-/* NPC icons rendered via ::after from data attribute */
-.tile-npc {
-  cursor: pointer;
+/* ── NPC portrait on tile ── */
+.tile-npc { cursor: pointer; }
+.npc-portrait-tile {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -60%);
+  width: 75%; height: 75%;
+  image-rendering: pixelated;
+  z-index: 3;
+  pointer-events: none;
+  animation: npcBob 2.2s ease-in-out infinite;
 }
 .tile-npc::after {
   content: '';
   position: absolute;
-  bottom: 6px; left: 50%;
+  bottom: 4px; left: 50%;
   transform: translateX(-50%);
-  width: 8px; height: 8px;
+  width: 6px; height: 6px;
   background: var(--gold);
   border-radius: 50%;
-  box-shadow: 0 0 8px var(--gold), 0 0 14px #c9a84c88;
+  box-shadow: 0 0 6px var(--gold);
   animation: npcPulse 1.8s ease-in-out infinite;
-  z-index: 4;
-}
-/* NPC figure drawn on top (above after pseudo) via a span injected by JS */
-.tile-npc .npc-figure {
-  position: absolute;
-  inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 3;
-  animation: npcBob 2.2s ease-in-out infinite;
-}
-/* NPC drawn as simple colored silhouette */
-.tile-npc .npc-figure canvas {
-  width: 72%; height: 72%;
-  image-rendering: pixelated;
+  z-index: 2;
 }
 
-@keyframes npcBob   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+/* ── Item markers ── */
+.item-marker {
+  position: absolute;
+  bottom: 6px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  line-height: 1;
+  z-index: 6;
+  pointer-events: none;
+  animation: itemBob 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px var(--gold));
+}
+@keyframes itemBob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-4px)} }
+
+@keyframes npcBob   { 0%,100%{transform:translate(-50%,-60%)} 50%{transform:translate(-50%,-68%)} }
 @keyframes npcPulse { 0%,100%{opacity:.6;transform:translateX(-50%) scale(1)} 50%{opacity:1;transform:translateX(-50%) scale(1.3)} }
+
+/* ── Inn tiles ── */
+.inn-wall  { background: #2a1a0e; box-shadow: inset 0 0 0 2px #1a0e06; }
+.inn-floor { background: #6a4a28; position: relative; }
+.inn-floor::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(45deg,transparent 0,transparent 10px,rgba(0,0,0,.06) 10px,rgba(0,0,0,.06) 11px); pointer-events:none; }
+.inn-rug   { background: #7a3060; }
+.inn-rug::before { content:''; position:absolute; inset:3px; border:1px solid #9a4080; pointer-events:none; }
+.inn-table { background: #5a3a18; box-shadow: inset 0 -4px 0 #3a2010; }
+.inn-chair { background: #5a3a18; }
+.inn-door  { background: #8a5a28; cursor: pointer; }
+.inn-door:hover { filter: brightness(1.2); }
+.inn-bed   { background: #4a3a28; }
+
+/* ── Energy bar ── */
+.hud-energy-wrap {
+  display: flex; align-items: center; gap: 5px;
+  font-size: .8rem; color: var(--text-dim);
+}
+.hud-energy-bar {
+  width: 64px; height: 6px;
+  background: #2a2a3a; border-radius: 3px; overflow: hidden;
+}
+.hud-energy-fill {
+  height: 100%; border-radius: 3px;
+  background: #50c080;
+  transition: width .3s, background .3s;
+}
+.hud-energy-text { font-size: .68rem; color: var(--text-dim); min-width: 38px; }
+
+/* ── Quest log entries ── */
+.quest-entry {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 2px; padding: 14px;
+}
+.quest-entry.quest-active { border-color: var(--gold); }
+.quest-entry.quest-done   { border-color: var(--spd-color); opacity: .75; }
+.quest-title  { font-family: var(--font-title); font-size: .9rem; color: var(--text); margin-bottom: 4px; }
+.quest-status { font-size: .75rem; color: var(--text-dim); margin-bottom: 4px; }
+.quest-step   { font-size: .82rem; color: var(--gold); margin-top: 4px; }
+.quest-desc   { font-size: .8rem; color: var(--text-dim); margin-top: 6px; font-style: italic; line-height: 1.4; }
+
+/* ── Dialog portrait ── */
+.dialog-portrait {
+  width: 90px; flex-shrink: 0;
+  background: var(--bg-card); border-right: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  padding: 5px; overflow: hidden;
+}
+.dialog-portrait canvas { width: 100%; height: 100%; image-rendering: pixelated; }
+
+/* ── Intro overlay ── */
+.intro-overlay {
+  position: fixed; inset: 0; z-index: 180;
+  background: rgba(0,0,0,.92);
+  display: flex; align-items: center; justify-content: center;
+}
+.intro-box {
+  width: 580px; max-width: 92vw;
+  background: var(--bg-panel); border: 1px solid var(--border-gold);
+  border-radius: 2px; box-shadow: var(--shadow);
+  padding: 40px 44px; text-align: center;
+  animation: fadeIn .5s ease;
+}
+.intro-title {
+  font-family: var(--font-title); font-size: 1.3rem;
+  color: var(--gold); letter-spacing: 3px; margin-bottom: 28px;
+}
+.intro-text {
+  font-size: 1.08rem; line-height: 1.9;
+  color: var(--text); font-style: italic; min-height: 72px;
+}
+.intro-text::after {
+  content: "▌";
+  animation: blink 0.7s step-end infinite;
+  color: var(--gold); opacity: 0.7;
+}
+@keyframes blink { 0%,100%{opacity:.7} 50%{opacity:0} }
+
+/* ── Quest log button ── */
+.hud-btn-quest { color: var(--gold); border-color: var(--border-gold); }
 
 /* ── Player ── */
 .player-sprite {
