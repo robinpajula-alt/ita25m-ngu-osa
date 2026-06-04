@@ -1430,7 +1430,7 @@ function checkRandomEncounter(){
   var biome=tile.biome;
   var pool=ENCOUNTERS[biome]; if(!pool) return;
   /* ~1 in 14 chance per step */
-  if(Math.random()>0.01) return;
+  if(Math.random()>0.003) return;
   /* weighted pick */
   var total=0; pool.forEach(function(e){ total+=e.w; });
   var roll=Math.random()*total;
