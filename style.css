@@ -25,7 +25,7 @@
   --font-title:   'Cinzel', serif;
   --font-body:    'Crimson Text', serif;
   /* tile size used both in CSS and JS (JS reads --tile-size) */
-  --tile-size:    96px;
+  --tile-size:    116px;
 }
 
 /* ── Reset ────────────────────────────────── */
@@ -284,19 +284,26 @@ input  { font-family: var(--font-body); }
   background-position: center;
   background-color: #3a6b30;
 }
-.tile-grass-edge {
-  background-image: url('assets/dark.png');
-  background-size: 135% 135%;
+/* Plain grass — never auto-darkened at tree edges. Use 'G' in MAP_DEF. */
+.tile-grass-plain {
+  background-image: url('assets/grass.png');
+  background-size: 110% 110%;
   background-position: center;
-  background-color: #2a5a22;
+  background-color: #3a6b30;
 }
-
-/* ── Tree tiles: dark ground + tree sprite on top ── */
-.tile-tree {
+.tile-grass-edge {
   background-image: url('assets/dark.png');
   background-size: 110% 110%;
   background-position: center;
   background-color: #2a5a22;
+}
+
+/* ── Tree tiles: ground texture + tree sprite on top ── */
+.tile-tree {
+  background-image: url('assets/grass.png');
+  background-size: 135% 135%;
+  background-position: center;
+  background-color: #3a6b30;
 }
 .tile-dark-tree {
   background-image: url('assets/dark.png');
@@ -304,6 +311,12 @@ input  { font-family: var(--font-body); }
   background-position: center;
   background-color: #1a2e18;
 }
+/* ── TREE OVERSCAN ──────────────────────────────────────────────────────────
+   TREE_WIDTH_SCALE / TREE_HEIGHT_SCALE in game.js control canopy size.
+   These CSS vars are set per-tile by buildGrid(); no fallback here so the
+   JS constants are always authoritative.
+   z-index on ::after is set per-tile by JS (var --tree-z) so canopy from
+   one row correctly overlaps tiles in the row above it.                     */
 .tile-tree::after,
 .tile-dark-tree::after {
   content: '';
@@ -311,14 +324,14 @@ input  { font-family: var(--font-body); }
   left: 50%;
   transform: translateX(-50%);
   bottom: 0;
-  width: 140%;
-  height: 320%;
+  width: var(--tree-w);
+  height: var(--tree-h);
   background-image: url('assets/tree.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center bottom;
   pointer-events: none;
-  z-index: 2;
+  z-index: var(--tree-z);
 }
 
 /* ── Desert / Sand ── */
@@ -361,18 +374,6 @@ input  { font-family: var(--font-body); }
   z-index: 3;
   pointer-events: none;
   animation: npcBob 2.2s ease-in-out infinite;
-}
-.tile-npc::after {
-  content: '';
-  position: absolute;
-  bottom: 4px; left: 50%;
-  transform: translateX(-50%);
-  width: 6px; height: 6px;
-  background: var(--gold);
-  border-radius: 50%;
-  box-shadow: 0 0 6px var(--gold);
-  animation: npcPulse 1.8s ease-in-out infinite;
-  z-index: 2;
 }
 
 /* ── Item markers ── */
@@ -434,12 +435,17 @@ input  { font-family: var(--font-body); }
 
 /* ── Dialog portrait ── */
 .dialog-portrait {
-  width: 90px; flex-shrink: 0;
+  width: 88px; height: 88px; flex-shrink: 0;
   background: var(--bg-card); border-right: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
-  padding: 5px; overflow: hidden;
+  padding: 8px; overflow: hidden;
 }
-.dialog-portrait canvas { width: 100%; height: 100%; image-rendering: pixelated; }
+.dialog-portrait canvas {
+  width: 72px; height: 72px;
+  image-rendering: pixelated;
+  display: block;
+  flex-shrink: 0;
+}
 
 /* ── Intro overlay ── */
 .intro-overlay {
@@ -536,12 +542,6 @@ input  { font-family: var(--font-body); }
   animation: slideUp .3s ease;
 }
 @keyframes slideUp { from { transform:translateY(30px); opacity:0; } to { transform:translateY(0); opacity:1; } }
-.dialog-portrait {
-  width: 90px; flex-shrink: 0;
-  background: var(--bg-card); border-right: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.8rem; padding: 16px;
-}
 .dialog-content { flex:1; padding:16px 20px; display:flex; flex-direction:column; gap:10px; }
 .dialog-speaker { font-family:var(--font-title); font-size:.9rem; color:var(--gold); letter-spacing:1px; }
 .dialog-text    { font-size:1rem; line-height:1.6; color:var(--text); min-height:40px; }
@@ -655,3 +655,16 @@ input  { font-family: var(--font-body); }
   75%  { opacity:1; }
   100% { opacity:0; }
 }
+/* ══════════════════ HOME ROOM ══════════════════ */
+.home-floor {
+  background: #c8b89a;
+  background-image:
+    repeating-linear-gradient(0deg,  transparent 0,transparent 15px,rgba(0,0,0,.05) 15px,rgba(0,0,0,.05) 16px),
+    repeating-linear-gradient(90deg, transparent 0,transparent 15px,rgba(0,0,0,.05) 15px,rgba(0,0,0,.05) 16px);
+}
+.home-bed  { background:#8a6a3a; position:relative; }
+.home-shelf{ background:#6a4a20; position:relative; }
+.home-shelf::after{ content:''; position:absolute; inset:0; background:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0,rgba(255,255,255,.07) 8px,transparent 8px,transparent 12px); pointer-events:none; }
+.home-desk { background:#5a4a30; position:relative; }
+.home-desk2{ background:#4a3820; border:2px solid #3a2c16; box-sizing:border-box; position:relative; }
+.home-desk2::after{ content:'🖼️'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.4rem; }

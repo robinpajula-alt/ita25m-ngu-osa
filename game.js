@@ -1,9 +1,18 @@
 /* WANDERER'S FOLLY — game.js v2 */
 
 /* -DATA- */
-var TILE_SIZE = 96;
+var TILE_SIZE = 116;
 var VIEW_COLS = 17;
 var VIEW_ROWS = 13;
+
+/* ── TREE OVERSCAN ──────────────────────────────────────────────────────────
+   Controls how wide/tall tree sprites extend beyond their tile boundary.
+   1.0 = exactly one tile (no overlap with neighbours).
+   1.6 = canopy is 60% wider than one tile  (recommended: 1.2 – 2.0).
+   3.2 = tree height spans 3.2 tile-heights (recommended: 2.0 – 4.0).
+   These are read by buildGrid() so a page refresh applies changes.         */
+var TREE_WIDTH_SCALE  = 1.6;   /* canopy width  in tile-widths  */
+var TREE_HEIGHT_SCALE = 3.2;   /* canopy height in tile-heights */
 
 var SKIN_COLORS   = ["#FDDBB4","#E8B88A","#C68642","#8D5524","#4A2912"];
 var HAIR_COLORS   = ["#2C1810","#8B4513","#DAA520","#C0C0C0","#CC0000"];
@@ -80,13 +89,23 @@ var QUESTS = {
 
 var questState = { active:{}, completed:{}, inventory:[], collect:{} };
 
+/* ── ITEM SPRITE FILENAMES ─────────────────────────────────────────────────
+   To use a custom image for an item marker, set useSprite:true and set the
+   src to the filename of your image inside the assets/ folder.
+   e.g. put "log.png" in your assets/ folder and set src:"assets/log.png"   */
+var ITEM_SPRITES = {
+  darkwood: { src: "assets/log.png"      },
+  satchel:  { src: "assets/satchel.png"  },
+  sunstone: { src: "assets/sunstone.png" }
+};
+
 var MAP_ITEMS = [
-  {r:4,  c:8,  id:"satchel",  label:"📦", found:false},
-  {r:11, c:25, id:"darkwood", label:"🪵", found:false},
-  {r:12, c:26, id:"darkwood", label:"🪵", found:false},
-  {r:10, c:28, id:"darkwood", label:"🪵", found:false},
-  {r:20, c:5,  id:"sunstone", label:"💎", found:false},
-  {r:8,  c:20, id:"shrine",   label:"✨", found:false, isShrine:true}
+  {r:8,  c:15,  id:"satchel",  label:"📦", useSprite:true, found:false},
+  {r:9, c:19, id:"darkwood", label:"🪵", useSprite:true, found:false},
+  {r:3, c:35, id:"darkwood", label:"🪵", useSprite:true, found:false},
+  {r:12, c:36, id:"darkwood", label:"🪵", useSprite:true, found:false},
+  {r:23, c:30,  id:"sunstone", label:"💎", useSprite:true, found:false},
+  {r:9,  c:30, id:"shrine",   label:"✨", found:false, isShrine:true}
 ];
 
 function getMapItem(r,c){
@@ -95,37 +114,37 @@ function getMapItem(r,c){
 }
 
 /* -MAP-
-  T=forest tree  #=dark tree  .=grass walkable
+  T=forest tree  #=dark tree  .=grass walkable  G=plain grass (never darkened)
   P=path  V=village  S=sand  D=desert walkable
-  NE/NG/NM/NI/NH = NPC spawns
+  NE/NG/NM/NI/NH/NN = NPC spawns
   Border of map is always trees/walls                    */
 var MAP_DEF = [
   ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
-  ["T",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
-  ["T",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T","#","#","#","#","#","#","#","#","#","#","#","T","T","T","T","T","T","T","T","T"],
-  ["T",".",".","NE",".",".",".",".",".",".",".",".",".",".",".",".","T","T","#","#","#",".",".",".",".",".",".",".",".",".","#","#","T","T","T","T","T","T","T","T"],
-  ["T",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".","#","T","T","T","T","T","T","T","T"],
-  ["T",".",".",".",".",".",".",".",".",".","P","P","P","P","P","P","P","P","P",".",".",".",".",".",".",".",".",".",".",".",".",".","#","T","T","T","T","T","T","T"],
-  ["T",".",".","NI",".",".","V","V","V","V","V","V","V",".",".",".","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".",".",".","#","T","T","T","T","T","T"],
-  ["T",".",".",".",".","P","V","V","V","NM","V","V","V","V",".",".",".","T","#",".",".",".","NH",".",".",".",".",".",".",".",".",".",".",".",".","#","T","T","T","T"],
-  ["T",".",".",".",".","P","V","NG","V","V","V","V","V","V",".",".",".","#",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T"],
-  ["T",".",".",".",".","P","V","V","V","V","V","V","V","V",".",".",".","#",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T"],
-  ["T",".",".",".",".",".","V","V","V","V","V","V",".",".",".",".","T","#",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T"],
-  ["T",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","#",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T"],
-  ["T",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","#","#","#",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T"],
-  ["T","T",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T","T","#","#","#",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T"],
-  ["T","T","T",".",".",".",".",".",".",".",".",".",".","T","T","T","T","T","T","T","T","#","#","#",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","."],
-  ["T","T","T","T",".",".",".",".",".",".",".",".",".","T","T","T","T","T","T","T","T","T","T","#","#","#","#","#",".",".",".",".",".",".",".",".",".",".",".","."],
-  ["T","T","T","T","T",".",".",".",".",".",".",".",".","T","T","T","T","T","T","T","T","T","T","T","T","T","#","#",".",".",".",".",".",".",".",".",".",".",".","."],
-  ["S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T",".",".",".",".",".",".",".",".",".",".",".","."],
+  ["T","NE","T","T","T","","","","","","","","","","","T","T","T","T","T","T","T","T","#","#","#","#","#","T","T","T","T","T","T","T","T","T","T","T","T"],
+  ["T","","T","T","","","V","NI","V",".",".",".",".",".",".","","T","T","T","T","#","#","#",".",".",".",".","#","#","#","#","#","#","#","#","#","T","T","T","T"],
+  ["T","","T","","",".","V","V","V",".",".",".",".",".",".","","T","T","#","#","#",".",".",".",".",".",".",".",".",".","#","#","#","#",".",".","T","T","T","T"],
+  ["T","","T","",".",".",".",".",".",".",".",".",".",".",".","","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".","#","#",".",".",".","T","T","T","T"],
+  ["T","","",".",".",".","","","","","","","V","NG",".",".","P","P","P",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T"],
+  ["T","",".","",".",".","","V","V","V","V","V","V","V","","","T","T","#",".",".","#","#",".",".",".",".","#","#","#",".",".",".",".","#","#","T","T","T","T"],
+  ["T","",".",".",".","","","V","V","NM","V","V","V","V","",".","","T","#",".","#","#","#","#",".",".","#","#","#","#","#",".",".",".","#","#","T","T","T","T"],
+  ["T","",".",".",".","","","V","V","V","V","V","V","V",".",".","","#","#",".","#","#","#","#",".",".","#","#","#","#","#","#",".",".",".","#","T","T","T","T"],
+  ["T","",".",".",".","","","V","V","V","V","V","V","V",".",".","","#","#",".","#","#","#","#",".",".","#","#","#","#",".","#",".",".",".",".","T","T","T","T"],
+  ["T","",".",".",".",".","","","","","","",".",".",".","","T","#","#",".","#","#","#","#",".",".","#","#","#","#",".",".",".",".",".",".","#","T","T","T"],
+  ["T","",".",".",".",".",".",".",".",".",".",".",".",".","","","T","#","#",".","#","#","#",".",".",".",".","#","#","#",".",".",".","#",".",".",".","#","T","T"],
+  ["T","",".",".",".",".",".",".",".",".",".",".",".",".","","T","T","#","#","#","#","#","V","V","V","NH",".","#","#","#","#","#","#","#",".",".",".","#","#","T"],
+  ["T","T","",".",".",".",".",".",".",".",".",".",".","","T","T","T","T","T","#","#","#","V","V","V","V","V","#","#","#","#","#","#","#",".",".",".","#","#","#"],
+  ["T","T","T","",".",".",".",".",".",".",".",".","","T","T","T","T","T","T","T","T","#","#","#","V","V","V","#","#","#","#","#","#","#",".",".",".","#","#","#"],
+  ["T","T","T","T","",".",".",".",".",".",".",".","","T","T","T","T","T","T","T","T","T","T","#","#","#","#","#","#","#","#","#","#","S","S","S","S","#","#","#"],
+  ["T","%","%","%","%","","","","","","","","","T","T","T","T","T","T","T","T","T","T","T","T","T","#","#","#","#","#","#","S","S","S","S","S","S","#","#"],
+  ["S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","#",".",".",".",".",".",".",".",".",".",".",".","#"],
   ["S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T",".",".",".",".",".",".",".",".",".",".",".",".","T"],
-  ["S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T",".",".",".",".",".",".",".",".",".",".",".",".","T"],
-  ["S","S","S","S","S","S","S","NN","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T",".",".",".",".",".",".",".",".",".",".",".",".","T","T"],
-  ["S","S","S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T"],
-  ["S","S","S","S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T"],
-  ["S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T","T"],
-  ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
-  ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
+  ["S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".","T"],
+  ["S","S","NN","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".","T","T"],
+  ["S","S","S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T"],
+  ["S","S","S","S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","#","#","#","#","#",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T"],
+  ["S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T","T"],
+  ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","S","S","S","S","S","T","T","T","T","T","T","T"],
+  ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","S","S","S","T","T","T","T","T","T","T","T"],
   ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
   ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
   ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
@@ -374,13 +393,27 @@ var Audio = (function(){
   function sfxQuestComplete(){ if(!ctx||!sfxEnabled) return; resume(); var t=ctx.currentTime; [392,523,659,784,1047].forEach(function(f,i){osc("triangle",f,0.16,t+i*0.09,0.4);}); osc("sine",2093,0.08,t+0.5,0.6); }
   function sfxSleep(){ if(!ctx||!sfxEnabled) return; resume(); var t=ctx.currentTime; [330,294,262,220].forEach(function(f,i){osc("sine",f,0.12,t+i*0.3,0.5);}); }
 
+  function sfxShrine(){
+    if(!ctx||!sfxEnabled) return; resume(); var t=ctx.currentTime;
+    /* rising harmonic sweep — otherworldly */
+    [110,165,220,330,440,660,880].forEach(function(f,i){
+      sweep("sine",f,f*2,0.12,t+i*0.18,1.2);
+    });
+    /* shimmer on top */
+    setTimeout(function(){
+      if(!ctx) return; var t2=ctx.currentTime;
+      [1760,2093,2637].forEach(function(f,i){ osc("sine",f,0.06,t2+i*0.1,0.8); });
+    },800);
+  }
+
   return{
     init,resume,
+    _ctx:function(){ return ctx; },
     sfxStep,sfxTypeChar,sfxDialogOpen,sfxDialogNext,sfxDialogClose,
     sfxShopOpen,sfxBuy,sfxBuyFail,sfxBiomeChange,
-    sfxGameStart,sfxMenuHover,sfxMenuClick,sfxItemFind,sfxQuestComplete,sfxSleep,
+    sfxGameStart,sfxMenuHover,sfxMenuClick,sfxItemFind,sfxQuestComplete,sfxSleep,sfxShrine,
     playMusic,stopMusic,
-    toggleMusic:function(){ musicEnabled=!musicEnabled; if(!musicEnabled) stopMusic(0.4); else { var n=isRaining?"rain":lastBiome||"forest"; playMusic(n); } return musicEnabled; },
+    toggleMusic:function(){ musicEnabled=!musicEnabled; if(!musicEnabled) stopMusic(0.4); else { var n=currentMap==="inn"?"inn":isRaining?"rain":lastBiome||"forest"; playMusic(n); } return musicEnabled; },
     toggleSfx:function(){ sfxEnabled=!sfxEnabled; return sfxEnabled; }
   };
 })();
@@ -404,6 +437,7 @@ var lastBiome  = "";
 var playerCanvas = null;
 var moveTimer    = null;
 var dialogState  = {npc:null,lines:[],idx:0,pendingQuestOffer:null,pendingQuestReturn:null};
+var isSleeping   = false;  /* blocks input during sleep/fade sequence */
 
 /* day system */
 var dayNumber   = 1;
@@ -426,11 +460,14 @@ function showScreen(name){
   });
 }
 
+function spriteOrEmoji(id,fallback,size){
+  var info=ITEM_SPRITES[id]; if(!info) return fallback;
+  return '<img src="'+info.src+'" style="width:'+(size||20)+'px;height:'+(size||20)+'px;image-rendering:pixelated;vertical-align:middle;margin-right:4px;" onerror="this.outerHTML=\''+fallback+'\'">';
+}
 function showToast(msg){
-  var old=document.querySelector(".toast");
-  if(old) old.remove();
-  var t=document.createElement("div");
-  t.className="toast"; t.textContent=msg;
+  var old=document.querySelector(".toast"); if(old) old.remove();
+  var t=document.createElement("div"); t.className="toast";
+  if(msg.indexOf("<img")!==-1) t.innerHTML=msg; else t.textContent=msg;
   document.body.appendChild(t);
   setTimeout(function(){if(t.parentNode)t.remove();},2700);
 }
@@ -459,6 +496,9 @@ function buildMap(){
         t.type="sand"; t.biome="desert";
         /* alternate for variety */
         t.cssClass=((c+r)%3===0)?"tile-sand-dark":"tile-sand";
+      } else if(cell==="G"){
+        /* plain grass — never auto-darkened at tree edges */
+        t.type="grass"; t.biome="forest"; t.cssClass="tile-grass-plain";
       } else if(cell==="."){
         /* determine biome by position */
         if(r>=17)      { t.biome="desert"; t.cssClass="tile-desert-floor"; }
@@ -470,7 +510,10 @@ function buildMap(){
       } else if(NPC_CODES[cell]){
         t.npc=NPC_CODES[cell]; t.blocked=true;
         t.biome=(r>=17)?"desert":(c>=18)?"dark_forest":(c>=5)?"village":"forest";
-        t.cssClass=(t.biome==="village")?"tile-village":(t.biome==="desert")?"tile-sand":"tile-grass";
+        if(t.biome==="village")      t.cssClass="tile-village";
+        else if(t.biome==="desert")  t.cssClass="tile-sand";
+        else if(t.biome==="dark_forest") t.cssClass="tile-grass-edge";
+        else                         t.cssClass="tile-grass";
         npcPos[c+","+r]=t.npc;
       }
       gameMap[r][c]=t;
@@ -589,7 +632,7 @@ function drawBedSprite(canvas){
 }
 
 /* -ENERGY SYSTEM- */
-var ENERGY_MAX=120, energy=120;
+var ENERGY_MAX=20000, energy=2000;
 function updateEnergyBar(){
   var bar=G("energyBar"), txt=G("energyText"); if(!bar) return;
   var pct=Math.max(0,energy/ENERGY_MAX*100);
@@ -708,11 +751,14 @@ function exitInn(){
   fadeOut(function(){
     currentMap="world"; player.x=3; player.y=7;
     buildGrid(); var tile=gameMap[player.y]&&gameMap[player.y][player.x];
-    if(!isRaining) Audio.playMusic(tile?tile.biome:"forest");
+    if(isRaining) Audio.playMusic("rain");
+    else Audio.playMusic(tile?tile.biome:"forest");
     updateHUD(); setTimeout(fadeIn,80);
   });
 }
 function sleepInBed(){
+  if(isSleeping) return;
+  isSleeping=true;
   Audio.sfxSleep&&Audio.sfxSleep();
   fadeOut(function(){
     dayNumber++; energy=ENERGY_MAX;
@@ -729,18 +775,18 @@ function sleepInBed(){
         msg.style.display="none";
         player.x=5; player.y=6;
         buildInnGrid(); updateHUD(); updateEnergyBar();
-        /* apply rain after waking */
+        /* apply rain after waking — but keep inn music */
         if(isRaining) toggleRain(true);
         else toggleRain(false);
         showDayBanner("Day "+dayNumber+(isRaining?" — Rain falls upon the land.":" — You feel rested."));
-        setTimeout(fadeIn,80);
+        setTimeout(function(){ fadeIn(); isSleeping=false; },80);
       },2200);
     } else {
       player.x=5; player.y=6;
       buildInnGrid(); updateHUD(); updateEnergyBar();
       if(isRaining) toggleRain(true); else toggleRain(false);
       showDayBanner("Day "+dayNumber+" — You feel rested.");
-      setTimeout(fadeIn,80);
+      setTimeout(function(){ fadeIn(); isSleeping=false; },80);
     }
   });
 }
@@ -842,7 +888,16 @@ function buildGrid(){
       var tile=gameMap[r][c];
       var el=document.createElement("div");
       el.className="tile "+(tile.cssClass||"tile-grass");
-      el.style.zIndex=r;
+      /* Only tree tiles get a z-index — this lets their ::after canopy
+         paint above surrounding ground tiles without being clipped.
+         Non-tree tiles have no z-index so they don't create stacking
+         contexts that would trap the tree canopy.                     */
+      if(tile.type==="tree"){
+        el.style.zIndex = (r * 10) + 5;
+        el.style.setProperty("--tree-w", (TREE_WIDTH_SCALE*100).toFixed(0)+"%");
+        el.style.setProperty("--tree-h", (TREE_HEIGHT_SCALE*100).toFixed(0)+"%");
+        el.style.setProperty("--tree-z", "2");
+      }
       if(!tile.blocked) el.classList.add("tile-walkable");
       if(tile.npc){
         el.classList.add("tile-npc");
@@ -859,9 +914,19 @@ function buildGrid(){
       if(item&&!item.found){
         var dot=document.createElement("div");
         dot.className="item-marker";
-        dot.textContent=item.label||"✦";
         dot.setAttribute("data-item-r",r);
         dot.setAttribute("data-item-c",c);
+        var spriteInfo=item.useSprite&&ITEM_SPRITES[item.id];
+        if(spriteInfo){
+          var img=document.createElement("img");
+          img.src=spriteInfo.src;
+          img.style.cssText="width:100%;height:100%;image-rendering:pixelated;display:block;";
+          img.onerror=function(){ this.parentNode.textContent=item.label||"✦"; };
+          dot.appendChild(img);
+          dot.style.width="32px"; dot.style.height="32px"; dot.style.fontSize="0";
+        } else {
+          dot.textContent=item.label||"✦";
+        }
         el.appendChild(dot);
       }
       grid.appendChild(el);
@@ -874,7 +939,7 @@ function buildGrid(){
   playerCanvas.height=48;
   playerCanvas.className="player-sprite";
   playerCanvas.style.position="absolute";
-  playerCanvas.style.zIndex="10000";
+  playerCanvas.style.zIndex= (player.y * 10) + 2;
   playerCanvas.style.imageRendering="pixelated";
   playerCanvas.style.pointerEvents="none";
   grid.appendChild(playerCanvas);
@@ -914,6 +979,8 @@ function updateCamera(animate){
   if(playerCanvas){
     playerCanvas.style.left=(player.x*TILE_SIZE+Math.round((TILE_SIZE-40)/2))+"px";
     playerCanvas.style.top =(player.y*TILE_SIZE+Math.round((TILE_SIZE-48)/2))+"px";
+    /* z-index: sit between tree rows — above row (y-1) trees, below row y trees */
+    playerCanvas.style.zIndex = (player.y * 10) + 2;
   }
 }
 
@@ -926,7 +993,10 @@ function updateHUD(){
   G("hudDay").textContent="Day "+dayNumber+(isRaining?" · 🌧 Raining":"");
 
   var tile=gameMap[player.y]&&gameMap[player.y][player.x];
-  if(!tile) return;
+  if(!tile||currentMap==="inn"){
+    G("hudBiome").textContent=currentMap==="inn"?"Inn":"...";
+    return;
+  }
   var names={forest:"Forest",dark_forest:"Dark Forest",desert:"Desert",village:"Village"};
   G("hudBiome").textContent=names[tile.biome]||tile.biome;
 
@@ -967,15 +1037,20 @@ function toggleRain(on){
     canvas.classList.add("active");
     if(tint) tint.classList.add("active");
     startRain();
-    Audio.playMusic("rain");
+    /* don't override inn music — rain is just visual inside the inn */
+    if(currentMap!=="inn") Audio.playMusic("rain");
   } else {
     canvas.classList.remove("active");
     if(tint) tint.classList.remove("active");
     stopRain();
-    /* resume biome music */
-    var tile=gameMap[player.y]&&gameMap[player.y][player.x];
-    var biome=tile?tile.biome:"forest";
-    Audio.playMusic(biome);
+    /* resume appropriate music */
+    if(currentMap==="inn"){
+      Audio.playMusic("inn");
+    } else {
+      var tile=gameMap[player.y]&&gameMap[player.y][player.x];
+      var biome=tile?tile.biome:"forest";
+      Audio.playMusic(biome);
+    }
   }
 }
 
@@ -1041,6 +1116,7 @@ var playerMoving=false;
 
 function handleKeyDown(e){
   if(!gameActive) return;
+  if(isSleeping) return;
   var introOv=G("introOverlay"); if(introOv&&introOv.style.display!=="none") return;
   if(G("dialogOverlay").style.display!=="none"){
     if(e.key==="Enter"||e.key===" "){ e.preventDefault(); advanceDialog(); }
@@ -1054,6 +1130,24 @@ function handleKeyDown(e){
   if(!mv) return;
   e.preventDefault();
   if(playerMoving) return;
+
+  /* ── HOME MOVEMENT (post-ending room, nothing interacts) ── */
+  if(currentMap==="home"){
+    var nx=player.x+mv.dx, ny=player.y+mv.dy;
+    if(nx<0||nx>=HOME_W||ny<0||ny>=HOME_H) return;
+    if(homeMap[ny][nx].blocked) return;
+    playerMoving=true;
+    player.x=nx; player.y=ny;
+    drawAvatar(playerCanvas);
+    playerCanvas.classList.add("walking");
+    playerCanvas.style.transition="left 0.13s linear,top 0.13s linear";
+    playerCanvas.style.left=(player.x*TILE_SIZE+Math.round((TILE_SIZE-40)/2))+"px";
+    playerCanvas.style.top =(player.y*TILE_SIZE+Math.round((TILE_SIZE-48)/2))+"px";
+    Audio.sfxStep&&Audio.sfxStep("village");
+    clearTimeout(moveTimer);
+    moveTimer=setTimeout(function(){ playerMoving=false; playerCanvas.classList.remove("walking"); },140);
+    return;
+  }
 
   /* ── INN MOVEMENT ── */
   if(currentMap==="inn"){
@@ -1144,8 +1238,8 @@ function startDialog(npcKey){
 
   /* portrait canvas */
   var portraitEl=G("dialogPortrait"); portraitEl.innerHTML="";
-  var pc=document.createElement("canvas"); pc.width=80; pc.height=80;
-  pc.style.imageRendering="pixelated"; pc.style.width="100%"; pc.style.height="100%";
+  var pc=document.createElement("canvas"); pc.width=72; pc.height=72;
+  pc.style.imageRendering="pixelated";
   drawNpcPortrait(pc,npcKey);
   portraitEl.appendChild(pc);
 
@@ -1156,20 +1250,373 @@ function startDialog(npcKey){
 }
 
 function checkItemPickup(item){
-  if(item.id==="satchel"){ showToast("📦 Found the Herbalist's Satchel!"); if(questState.active["q1"]) QUESTS.q1.step=1; }
-  else if(item.id==="darkwood"){ var ct=questState.collect.darkwood||0; showToast("🪵 Darkwood collected! ("+ct+"/3)"); if(questState.active["q2"]){QUESTS.q2.steps[0]="Collect 3 Darkwood ("+ct+"/3)"; if(ct>=3)QUESTS.q2.step=1;} }
-  else if(item.id==="sunstone"){ showToast("💎 Found a Sun Stone!"); if(questState.active["q3"]) QUESTS.q3.step=1; }
+  if(item.id==="satchel"){ showToast(spriteOrEmoji("satchel","📦",20)+" Found the Herbalist's Satchel!"); if(questState.active["q1"]) QUESTS.q1.step=1; }
+  else if(item.id==="darkwood"){ var ct=questState.collect.darkwood||0; showToast(spriteOrEmoji("darkwood","🪵",20)+" Darkwood collected! ("+ct+"/3)"); if(questState.active["q2"]){QUESTS.q2.steps[0]="Collect 3 Darkwood ("+ct+"/3)"; if(ct>=3)QUESTS.q2.step=1;} }
+  else if(item.id==="sunstone"){ showToast(spriteOrEmoji("sunstone","💎",20)+" Found a Sun Stone!"); if(questState.active["q3"]) QUESTS.q3.step=1; }
   renderQuestLog();
 }
 
+/* ═══════════════════════ SHRINE / OUTRO ═══════════════════════ */
 function handleShrine(){
-  var frags=["forest_fragment","dark_fragment","desert_fragment"].filter(function(f){return questState.inventory.indexOf(f)!==-1;}).length;
+  var frags=["forest_fragment","dark_fragment","desert_fragment"].filter(function(f){
+    return questState.inventory.indexOf(f)!==-1;
+  }).length;
   if(frags<3){ showToast("The shrine hums... "+frags+"/3 fragments needed."); return; }
-  /* win */
-  var portraitEl=G("dialogPortrait"); portraitEl.innerHTML="<span style='font-size:2.8rem'>🌟</span>";
-  dialogState.npc={name:"The Spirit"}; dialogState.lines=["The shrine blazes to life. Three fragments orbit the pillar, singing.","A voice fills the clearing — not sound, but memory.","You remember a name. A home. A reason you left.","The debt is paid. You are free.","✦  You restored the Spirit Shrine  ✦","Thank you for playing Wanderer's Folly."]; dialogState.idx=0;
-  G("dialogSpeaker").textContent="The Spirit"; G("dialogOverlay").style.display="flex";
-  Audio.sfxQuestComplete&&Audio.sfxQuestComplete(); renderDialogLine();
+
+  /* ── Step 1: Spirit dialog ── */
+  gameActive=false; /* block movement during outro sequence */
+  Audio.sfxQuestComplete&&Audio.sfxQuestComplete();
+
+  /* Play rising shrine sound */
+  Audio.sfxShrine&&Audio.sfxShrine();
+
+  /* Set up spirit dialog — last line triggers dissolve */
+  var portraitEl=G("dialogPortrait");
+  portraitEl.innerHTML="<span style='font-size:2.8rem;filter:drop-shadow(0 0 12px #ffd080);'>🌟</span>";
+  dialogState.npc={name:"The Spirit", isSpirit:true};
+  dialogState.lines=[
+    "The shrine blazes to life.",
+    "Three fragments orbit the pillar — singing in a language older than words.",
+    "You have gathered the fragments.",
+    "A voice fills the clearing. Not sound... but memory.",
+    "You remember a name. A home. A reason you left.",
+    "The debt is paid. You are free."
+  ];
+  dialogState.idx=0;
+  G("dialogSpeaker").textContent="✦ The Spirit ✦";
+  G("dialogSpeaker").style.cssText+="color:#ffd080;text-shadow:0 0 12px #ffd080;";
+  G("dialogOverlay").style.display="flex";
+  renderDialogLine();
+}
+
+/* Called after the last spirit dialog line is dismissed */
+function beginDissolveSequence(){
+  G("dialogOverlay").style.display="none";
+  Audio.sfxDialogClose&&Audio.sfxDialogClose();
+
+  /* Eerie dissolve sound — low rumble + high tone */
+  if(Audio._ctx&&Audio._ctx()){
+    var ctx2=Audio._ctx();
+    var t=ctx2.currentTime;
+    /* low rumble */
+    var o1=ctx2.createOscillator(),g1=ctx2.createGain();
+    o1.type="sawtooth"; o1.frequency.setValueAtTime(40,t); o1.frequency.exponentialRampToValueAtTime(80,t+3);
+    g1.gain.setValueAtTime(0,t); g1.gain.linearRampToValueAtTime(0.3,t+0.5);
+    g1.gain.linearRampToValueAtTime(0,t+3.5);
+    o1.connect(g1); g1.connect(ctx2.destination); o1.start(t); o1.stop(t+3.6);
+    /* eerie high shimmer */
+    [1200,1400,1600,1800,2000].forEach(function(f,i){
+      var o=ctx2.createOscillator(),g=ctx2.createGain();
+      o.type="sine"; o.frequency.value=f;
+      g.gain.setValueAtTime(0,t+i*0.2);
+      g.gain.linearRampToValueAtTime(0.04,t+i*0.2+0.3);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+i*0.2+2.5);
+      o.connect(g); g.connect(ctx2.destination); o.start(t+i*0.2); o.stop(t+i*0.2+2.6);
+    });
+  }
+
+  /* Create dissolve overlay */
+  var dov=document.createElement("div"); dov.id="dissolveOverlay";
+  dov.style.cssText="position:fixed;inset:0;z-index:250;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.8s ease;pointer-events:all;";
+  document.body.appendChild(dov);
+
+  /* The dissolve text — Undertale-style: white, glitchy, raw */
+  var dtxt=document.createElement("div"); dtxt.id="dissolveText";
+  dtxt.style.cssText=[
+    "font-family:'Courier New',Courier,monospace",
+    "font-size:clamp(1rem,3vw,1.6rem)",
+    "color:#ffffff",
+    "text-align:center",
+    "max-width:600px",
+    "padding:32px",
+    "line-height:2",
+    "letter-spacing:0.15em",
+    "text-shadow:0 0 8px #fff, 0 0 2px #aef",
+    "white-space:pre-wrap"
+  ].join(";");
+  dov.appendChild(dtxt);
+
+  var hint=document.createElement("div");
+  hint.style.cssText="position:absolute;bottom:40px;color:rgba(255,255,255,0.35);font-family:'Courier New',monospace;font-size:0.75rem;letter-spacing:3px;";
+  hint.textContent="[ press enter to continue ]";
+  dov.appendChild(hint);
+
+  /* Fade in the black overlay first */
+  requestAnimationFrame(function(){
+    dov.style.opacity="1";
+    setTimeout(function(){
+      typeDissolveText(dtxt, hint, dov);
+    }, 900);
+  });
+}
+
+function typeDissolveText(el, hint, overlay){
+  var fullText = "The world around you begins to dissolve..";
+  var i=0;
+  var glitchChars="█▓▒░▄▀■□▪▫";
+  var iv=setInterval(function(){
+    if(i>=fullText.length){
+      clearInterval(iv);
+      /* show hint and wait for input */
+      hint.style.opacity="1";
+      hint.style.transition="opacity 1s ease";
+      /* flicker the hint */
+      var flickerCount=0;
+      var flickIv=setInterval(function(){
+        flickerCount++;
+        hint.style.opacity=(flickerCount%2===0)?"1":"0.2";
+        if(flickerCount>10) clearInterval(flickIv);
+      },400);
+
+      function onDissolveAdvance(e){
+        if(e.key==="Enter"||e.key===" "||e.type==="click"){
+          e.preventDefault();
+          document.removeEventListener("keydown",onDissolveAdvance);
+          overlay.removeEventListener("click",onDissolveAdvance);
+          clearInterval(flickIv);
+          /* fade out dissolve text, then start cutscene */
+          overlay.style.transition="opacity 0.6s ease";
+          overlay.style.opacity="0";
+          setTimeout(function(){
+            if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            startOutro();
+          }, 700);
+        }
+      }
+      document.addEventListener("keydown",onDissolveAdvance);
+      overlay.addEventListener("click",onDissolveAdvance);
+      return;
+    }
+    /* glitch effect: occasionally show random char then correct char */
+    var ch=fullText[i];
+    if(Math.random()<0.3 && ch!==" " && ch!=="."){
+      el.textContent+=glitchChars[Math.floor(Math.random()*glitchChars.length)];
+      setTimeout(function(){ el.textContent=el.textContent.slice(0,-1)+ch; },60);
+    } else {
+      el.textContent+=ch;
+    }
+    i++;
+    /* brief screen flicker every ~7 chars */
+    if(i%7===0 && Math.random()<0.4){
+      el.style.opacity="0.3";
+      setTimeout(function(){ el.style.opacity="1"; },80);
+    }
+  }, 85);
+}
+
+/* ═══════════════════════ OUTRO CUTSCENE ═══════════════════════ */
+var HOME_MAP_DEF=[
+  ["W","W","W","W","W","W","W","W","W","W","W","W","W","W"],
+  ["W","F","F","F","F","F","F","F","F","F","F","F","F","W"],
+  ["W","F","BD","BD","F","F","F","F","F","F","F","F","F","W"],
+  ["W","F","BD","BD","F","F","F","F","F","F","F","F","F","W"],
+  ["W","F","F","F","F","SH","SH","SH","F","F","F","F","F","W"],
+  ["W","F","F","F","F","SH","PC","SH","F","F","F","F","F","W"],
+  ["W","F","F","F","F","SH","SH","SH","F","F","F","F","F","W"],
+  ["W","F","F","F","F","F","F","F","F","F","DK","DK","F","W"],
+  ["W","F","F","F","F","F","F","F","F","F","DK","DK","F","W"],
+  ["W","W","W","W","W","W","W","W","W","W","W","W","W","W"]
+];
+var HOME_H=HOME_MAP_DEF.length, HOME_W=HOME_MAP_DEF[0].length;
+var homeMap=[];
+
+function buildHomeMap(){
+  homeMap=[];
+  for(var r=0;r<HOME_H;r++){
+    homeMap[r]=[];
+    for(var c=0;c<HOME_W;c++){
+      var cell=HOME_MAP_DEF[r][c];
+      var t={type:"floor",blocked:false,biome:"home",cssClass:"home-floor",special:null};
+      if(cell==="W")  { t.type="wall";  t.blocked=true; t.cssClass="inn-wall"; }
+      else if(cell==="BD"){ t.type="bed"; t.blocked=true; t.cssClass="home-bed"; t.special="bed"; }
+      else if(cell==="SH"){ t.type="shelf"; t.blocked=true; t.cssClass="home-shelf"; }
+      else if(cell==="PC"){ t.type="desk";  t.blocked=true; t.cssClass="home-desk"; }
+      else if(cell==="DK"){ t.type="desk2"; t.blocked=true; t.cssClass="home-desk2"; }
+      homeMap[r][c]=t;
+    }
+  }
+}
+
+function buildHomeGrid(){
+  var grid=G("worldGrid"); grid.innerHTML="";
+  grid.style.gridTemplateColumns="repeat("+HOME_W+","+TILE_SIZE+"px)";
+  grid.style.gridTemplateRows   ="repeat("+HOME_H+","+TILE_SIZE+"px)";
+  grid.style.width =(HOME_W*TILE_SIZE)+"px";
+  grid.style.height=(HOME_H*TILE_SIZE)+"px";
+  grid.style.willChange="transform";
+
+  for(var r=0;r<HOME_H;r++){
+    for(var c=0;c<HOME_W;c++){
+      var tile=homeMap[r][c];
+      var el=document.createElement("div");
+      el.className="tile "+(tile.cssClass||"home-floor");
+      el.style.zIndex=r;
+      if(tile.type==="bed"&&r===2&&c===2){
+        var bedC=document.createElement("canvas");
+        bedC.width=TILE_SIZE*2; bedC.height=TILE_SIZE*2;
+        bedC.style.cssText="position:absolute;left:0;top:0;width:"+(TILE_SIZE*2)+"px;height:"+(TILE_SIZE*2)+"px;image-rendering:pixelated;z-index:3;pointer-events:none;";
+        drawBedSprite(bedC); el.appendChild(bedC);
+      }
+      if(tile.type==="desk"){
+        var lbl=document.createElement("div");
+        lbl.style.cssText="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.8rem;z-index:3;";
+        lbl.textContent="🖥️"; el.appendChild(lbl);
+      }
+      if(tile.type==="shelf"&&r===4&&c===5){
+        var lbl2=document.createElement("div");
+        lbl2.style.cssText="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.8rem;z-index:3;";
+        lbl2.textContent="📚"; el.appendChild(lbl2);
+      }
+      grid.appendChild(el);
+    }
+  }
+  playerCanvas=document.createElement("canvas");
+  playerCanvas.width=40; playerCanvas.height=48;
+  playerCanvas.className="player-sprite";
+  playerCanvas.style.cssText="position:absolute;z-index:50;image-rendering:pixelated;pointer-events:none;";
+  grid.appendChild(playerCanvas);
+  drawAvatar(playerCanvas);
+  playerCanvas.style.left=(player.x*TILE_SIZE+Math.round((TILE_SIZE-40)/2))+"px";
+  playerCanvas.style.top =(player.y*TILE_SIZE+Math.round((TILE_SIZE-48)/2))+"px";
+
+  /* center home in viewport */
+  var viewW=G("worldContainer").clientWidth;
+  var viewH=G("worldContainer").clientHeight;
+  camX=Math.round(Math.max(-(HOME_W*TILE_SIZE-viewW),(viewW-(HOME_W*TILE_SIZE))/2));
+  camY=Math.round(Math.max(-(HOME_H*TILE_SIZE-viewH),(viewH-(HOME_H*TILE_SIZE))/2));
+  var gridEl=G("worldGrid"); gridEl.style.transition="none";
+  gridEl.style.transform="translate("+camX+"px,"+camY+"px)";
+}
+
+function startOutro(){
+  /* overlay for cutscene effects */
+  var cut=document.createElement("div"); cut.id="outroCutscene";
+  cut.style.cssText="position:fixed;inset:0;z-index:300;pointer-events:none;overflow:hidden;";
+  document.body.appendChild(cut);
+
+  var cc=document.createElement("canvas");
+  cc.style.cssText="position:absolute;inset:0;width:100%;height:100%;";
+  cc.width=window.innerWidth; cc.height=window.innerHeight;
+  cut.appendChild(cc);
+  var ctx=cc.getContext("2d");
+
+  var card=document.createElement("div");
+  card.style.cssText="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0;transition:opacity 1.2s ease;pointer-events:none;";
+  cut.appendChild(card);
+
+  function addLine(txt,style){
+    var d=document.createElement("div"); d.style.cssText=style; d.textContent=txt; card.appendChild(d); return d;
+  }
+  addLine("✦  THE WANDERER RETURNS  ✦","font-family:'Cinzel',serif;font-size:clamp(1rem,3vw,2rem);color:#fff;letter-spacing:4px;text-shadow:0 0 24px #fff,0 0 8px #adf;");
+  addLine(player.name+" remembered everything.","font-family:'Crimson Text',serif;font-style:italic;font-size:clamp(.8rem,2vw,1.2rem);color:#c8e8ff;letter-spacing:2px;text-shadow:0 0 12px #adf;");
+  addLine("","font-size:.5rem;");
+  addLine("You are home.","font-family:'Cinzel',serif;font-size:clamp(1rem,2.5vw,1.6rem);color:#ffd080;letter-spacing:6px;text-shadow:0 0 20px #ffd080;");
+
+  /* particles */
+  var particles=[];
+  for(var i=0;i<120;i++){
+    particles.push({
+      x:Math.random()*cc.width, y:Math.random()*cc.height,
+      vx:(Math.random()-0.5)*3, vy:-(1+Math.random()*4),
+      r:2+Math.random()*4, life:1, decay:0.005+Math.random()*0.008,
+      hue:Math.random()<0.5?55:200
+    });
+  }
+
+  var phase=0, phaseT=0, flashOpacity=0, blackOpacity=0, animId;
+  var shakeAmt=0;
+
+  function frame(){
+    animId=requestAnimationFrame(frame);
+    phaseT++;
+    ctx.clearRect(0,0,cc.width,cc.height);
+
+    if(shakeAmt>0.2){
+      var sx=(Math.random()-0.5)*shakeAmt*2, sy=(Math.random()-0.5)*shakeAmt*2;
+      var grd=G("worldGrid"); if(grd) grd.style.transform="translate("+(camX+sx)+"px,"+(camY+sy)+"px)";
+      shakeAmt*=0.85;
+    }
+
+    /* phase 0: particles charge + rings, screen shakes */
+    if(phase===0){
+      var progress=phaseT/120;
+      shakeAmt=progress*20;
+      var cx2=cc.width/2, cy2=cc.height/2;
+      for(var ri=0;ri<3;ri++){
+        var rr=(phaseT*2.5+ri*50)%200;
+        ctx.beginPath(); ctx.arc(cx2,cy2,rr,0,Math.PI*2);
+        ctx.strokeStyle="rgba(255,220,80,"+(0.5*(1-rr/200))+")";
+        ctx.lineWidth=2.5; ctx.stroke();
+      }
+      for(var pi=0;pi<particles.length;pi++){
+        var p=particles[pi];
+        if(phaseT>60){ var dx=cx2-p.x,dy=cy2-p.y,dist=Math.sqrt(dx*dx+dy*dy)||1; p.vx+=dx/dist*0.4; p.vy+=dy/dist*0.4; }
+        p.x+=p.vx; p.y+=p.vy; p.life-=p.decay*0.4;
+        if(p.life<=0){ p.x=Math.random()*cc.width; p.y=Math.random()*cc.height; p.life=1; p.vx=(Math.random()-0.5)*3; p.vy=-(1+Math.random()*4); }
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
+        ctx.fillStyle="hsla("+p.hue+",100%,80%,"+p.life+")"; ctx.fill();
+      }
+      if(phaseT>=120){ phase=1; phaseT=0; shakeAmt=0; }
+    }
+
+    /* phase 1: white flash */
+    else if(phase===1){
+      flashOpacity=Math.min(1,phaseT/18);
+      ctx.fillStyle="rgba(255,255,220,"+flashOpacity+")";
+      ctx.fillRect(0,0,cc.width,cc.height);
+      if(phaseT>=35){ phase=2; phaseT=0; }
+    }
+
+    /* phase 2: fade to black, swap map while hidden */
+    else if(phase===2){
+      blackOpacity=Math.min(1,phaseT/30);
+      ctx.fillStyle="rgba(0,0,0,"+blackOpacity+")";
+      ctx.fillRect(0,0,cc.width,cc.height);
+      if(phaseT===30){
+        /* swap to home map while fully black */
+        buildHomeMap(); currentMap="home";
+        player.x=6; player.y=5;
+        buildHomeGrid(); updateHUD();
+        Audio.stopMusic&&Audio.stopMusic(0.1);
+        setTimeout(function(){ Audio.playMusic&&Audio.playMusic("inn"); },600);
+      }
+      if(phaseT>=55){ phase=3; phaseT=0; }
+    }
+
+    /* phase 3: hold black, fade in title card */
+    else if(phase===3){
+      var holdOpacity=Math.max(0,1-phaseT/50);
+      ctx.fillStyle="rgba(0,0,0,"+holdOpacity+")";
+      ctx.fillRect(0,0,cc.width,cc.height);
+      if(phaseT===20) card.style.opacity="1";
+      if(phaseT>=360){ phase=4; phaseT=0; card.style.transition="opacity 0.8s ease"; card.style.opacity="0"; }
+    }
+
+    /* phase 4: fade out canvas overlay entirely */
+    else if(phase===4){
+      var fo=Math.max(0,1-phaseT/50);
+      if(fo<=0){
+        cancelAnimationFrame(animId);
+        if(cut.parentNode) cut.parentNode.removeChild(cut);
+        var grd2=G("worldGrid"); if(grd2) grd2.style.transform="translate("+camX+"px,"+camY+"px)";
+        gameActive=true; /* re-enable movement in home */
+        setTimeout(showEndScreen, 400);
+        return;
+      }
+      ctx.fillStyle="rgba(0,0,0,"+fo+")"; ctx.fillRect(0,0,cc.width,cc.height);
+    }
+  }
+  frame();
+}
+
+function showEndScreen(){
+  var el=document.createElement("div"); el.id="endScreen";
+  el.style.cssText="position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;";
+  el.innerHTML='<div style="font-family:Cinzel,serif;font-size:clamp(1.2rem,4vw,2.8rem);color:#ffd080;letter-spacing:6px;text-shadow:0 0 24px #ffd080;">✦  THE END  ✦</div>'
+    +'<div style="font-family:\'Crimson Text\',serif;font-style:italic;color:#c0d8ff;font-size:clamp(.9rem,2vw,1.3rem);text-align:center;max-width:480px;line-height:1.8;">'+player.name+' made it home.<br>The Wanderer\'s Folly is complete.</div>'
+    +'<div style="color:#666;font-size:.8rem;letter-spacing:2px;margin-top:8px;">Thank you for playing.</div>'
+    +'<button onclick="location.reload()" style="margin-top:24px;padding:12px 32px;font-family:Cinzel,serif;font-size:1rem;letter-spacing:3px;background:transparent;border:1px solid #ffd080;color:#ffd080;cursor:pointer;" onmouseover="this.style.background=\'#ffd08022\'" onmouseout="this.style.background=\'transparent\'">Play Again</button>';
+  document.body.appendChild(el);
 }
 
 function renderQuestLog(){
@@ -1228,8 +1675,8 @@ function advanceDialog(){
   }
   dialogState.idx++;
   if(dialogState.idx>=dialogState.lines.length){
-    /* if this was the innkeeper, entering the inn is the primary action */
     var wasInnkeeper = dialogState.npc && dialogState.npc.id==="innkeeper";
+    var wasSpirit    = dialogState.npc && dialogState.npc.isSpirit;
     if(dialogState.pendingQuestOffer){ questState.active[dialogState.pendingQuestOffer]=true; QUESTS[dialogState.pendingQuestOffer].step=1; showToast("📜 New Quest: "+QUESTS[dialogState.pendingQuestOffer].title); renderQuestLog(); dialogState.pendingQuestOffer=null; }
     if(dialogState.pendingQuestReturn){
       var qid=dialogState.pendingQuestReturn; var q=QUESTS[qid];
@@ -1244,6 +1691,7 @@ function advanceDialog(){
       updateHUD(); renderQuestLog(); dialogState.pendingQuestReturn=null;
     }
     closeDialog();
+    if(wasSpirit){ beginDissolveSequence(); return; }
     if(wasInnkeeper){ enterInn(); }
   } else { Audio.sfxDialogNext(); renderDialogLine(); }
 }
@@ -1433,7 +1881,7 @@ function startGame(isNewGame){
   if(!container.querySelector(".rain-tint")){
     var tint=document.createElement("div"); tint.className="rain-tint"; container.appendChild(tint);
   }
-  buildMap(); buildInnMap(); buildGrid();
+  buildMap(); buildInnMap(); buildHomeMap(); buildGrid();
   showScreen("game");
   /* resize rain canvas to match container */
   var rc=G("rainCanvas");
