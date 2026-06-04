@@ -55,27 +55,141 @@ var ALL_ITEMS = SHOP_DATA.weapons.concat(SHOP_DATA.armor).concat(SHOP_DATA.items
 var NPCS = {
   elder:{
     icon:"🧙", name:"Elder Morthis",
-    lines:["Ah, another wanderer. How refreshing. By refreshing I mean exhausting.","The Dark Forest to the east is spiritually challenging. Bring a weapon. Or a therapist.","The desert to the south is hot, sandy, and full of philosophical crises. You'll fit right in.","I've lived here 400 years. Nothing changes. Nothing."],
+    lines:[
+      "Four hundred years in this village. You'd think I'd run out of things to worry about. I have not.",
+      "The Dark Forest was planted by someone who wanted to be left alone. It worked.",
+      "The desert to the south isn't trying to kill you. It simply doesn't care if you live. There's a difference.",
+      "I remember when this forest was just... forest. Before it started answering back.",
+      "If you find anything glowing near the old shrine — don't touch it with bare hands. I learned that the expensive way.",
+      "The village has survived seven wanderers this year. You look like you could make it eight."
+    ],
     questOffer:"q1",
-    questOfferLines:["Actually — before you go. I lost my herb satchel somewhere in the forest near here.","Brown bag, smells of rosemary and regret. Could you find it?"],
-    questReturnLines:["You found it! Extraordinary. I genuinely doubted you.","Take this gold — and this Forest Fragment I found years ago in the roots of an old oak.","I never knew what it was for. Perhaps you will."]
+    questOfferLines:[
+      "Wait — before you wander into something you'll regret, I have a problem.",
+      "My herb satchel. Brown leather, brass clasp, smells of rosemary and old mistakes. Somewhere in the forest east of here.",
+      "I'd fetch it myself but my knees have opinions about that. Find it, bring it back. I'll make it worth your while."
+    ],
+    questActiveLines:[
+      "The satchel is still out there. Brown bag, brass clasp. It won't come to you.",
+      "My back is reminding me hourly that you haven't returned yet. Please hurry."
+    ],
+    questReturnLines:[
+      "You actually found it. I'll admit — you have the look of someone who loses things, not finds them.",
+      "The herbs are intact. Remarkable.",
+      "Here, take this gold. And this — a Forest Fragment. I pulled it from the roots of an old oak forty years ago and never understood it.",
+      "Something tells me it belongs with you now."
+    ],
+    questMemoryLines:[
+      "The herbs are back where they belong. My back has forgiven you. My knees remain sceptical.",
+      "Four hundred years and I still misplace things. You'd think I'd learn. I haven't.",
+      "I've been thinking about that Fragment. Do you feel it pulling? I used to, from across the village.",
+      "You found the satchel. I gave you the Fragment. Whatever happens next — that part is yours."
+    ]
   },
-  merchant:{icon:"🏪",name:"Merda the Merchant",lines:["Buy something or stop breathing on my inventory.","Fine goods! Mostly. A few are cursed, but that's priced in.","Gold only. I tried bartering once. Never again."],opensShop:true},
-  guard:{icon:"💂",name:"Guard Borvald",lines:["Halt! I mean... you can pass. I just like saying halt.","This village has three rules: No running, no philosophy, no running while philosophising.","The path east leads to the Dark Forest. Three went in. They came back different."]},
+  merchant:{
+    icon:"🏪", name:"Merda the Merchant",
+    lines:[
+      "Browse, buy, or move along. This isn't a library.",
+      "Everything here is priced fairly. Fairly for me, anyway.",
+      "The cursed items are clearly labelled. Mostly. Check the fine print.",
+      "I've been at this crossroads eleven years. The road brings everyone eventually.",
+      "That sword? Good steel. The previous owner just... didn't need it anymore. Don't ask why."
+    ],
+    opensShop:true
+  },
+  guard:{
+    icon:"💂", name:"Guard Borvald",
+    lines:[
+      "Halt! ...You can pass. I just like the sound of it.",
+      "Three rules in this village: no running, no unsolicited philosophy, and absolutely no running while philosophising.",
+      "The Dark Forest path is east. Three adventurers went in last month. Two came back. The third came back... changed.",
+      "I've guarded this gate six years. Nothing bad has happened on my watch. Probably a coincidence.",
+      "You've got that look — like you're about to do something inadvisable. I've seen it before. Usually ends with paperwork.",
+      "The innkeeper makes decent stew. Don't ask what's in it. She'll tell you and you'll regret asking."
+    ]
+  },
   hermit:{
     icon:"🧝", name:"Hermit Zel",
-    lines:["You found me! Hiding from what? Good question.","The desert teaches you things. Mostly: don't go to the desert.","If you hear singing in the Dark Forest, don't sing back. Don't."],
+    lines:[
+      "Oh. A visitor. I'd say unexpected but I've been expecting someone for years. It's exhausting.",
+      "The Dark Forest and I have an understanding. I leave it alone. It leaves me mostly alone.",
+      "Don't follow the lights in the forest at night. They're not trying to guide you. They're just curious what you'll do.",
+      "I've lived out here long enough to know the difference between silence and something being very quiet.",
+      "The desert? I went once. The heat rearranges your thoughts. Some of them don't come back.",
+      "If the forest starts feeling smaller — it is. Keep moving."
+    ],
     questOffer:"q2",
-    questOfferLines:["I need Darkwood — three pieces from the dark trees in the eastern forest.","My fire burns only with it. Everything else turns to ash and quiet despair."],
-    questReturnLines:["Three pieces! Perfect. The fire will burn bright tonight.","Here — the gold I promised. And this Dark Fragment I found in the roots of a dead tree.","It hums faintly. Keep it safe."]
+    questOfferLines:[
+      "Since you're here and capable of walking — I need something.",
+      "Darkwood. Three pieces. Black-barked logs from the dead trees deep in the eastern forest.",
+      "My fire won't take anything else. Regular wood just... weeps. It's unpleasant for everyone.",
+      "Bring me three pieces and I'll pay you well. And tell you something worth knowing."
+    ],
+    questActiveLines:[
+      "Darkwood. Three pieces. Black bark, heavier than it looks. Eastern forest, near the dead trees.",
+      "The forest won't make it easy. It never does. But you look like someone it'll tolerate."
+    ],
+    questReturnLines:[
+      "Three pieces. You actually managed it.",
+      "The fire's been cold for a week. I was starting to think in straight lines. Horrible.",
+      "Here — gold, as promised.",
+      "And this: a Dark Fragment. I found it in the roots of a dead tree years ago. It hummed whenever the forest went quiet.",
+      "I don't know what it's for. But it reacted when you walked up. So. Yours now."
+    ],
+    questMemoryLines:[
+      "The fire's been burning well. Whatever Darkwood does — it works.",
+      "You carried three pieces through that forest. It notices things like that, you know.",
+      "The Dark Fragment is yours now. Don't lose it. The forest remembers who has it.",
+      "I've been thinking. That fragment — it hummed louder after you left. I think it's looking for the others."
+    ]
   },
-  innkeeper:{icon:"🍺", id:"innkeeper", name:"Innkeeper Greta",lines:["Room for the night? The beds are clean. Dreams not guaranteed.","We serve stew. What kind? The kind that exists. That's all I know.","You look tired. The inn is right here — step inside and find the bed to rest.","Sleep and your wounds will heal. The world will still be broken tomorrow."]},
+  innkeeper:{
+    icon:"🍺", id:"innkeeper", name:"Innkeeper Greta",
+    lines:[
+      "The beds are clean. The dreams are your own problem.",
+      "Stew's on. I don't know what's in it today. Neither does the cook. We've stopped asking.",
+      "You look like you've been walking too long. There's a bed inside — find it, use it.",
+      "Sleep heals more than potions and costs less. That's not advice, that's accounting.",
+      "We've had all sorts through here. Knights, mages, one very confused goat. You fit right in.",
+      "The inn has stood two hundred years. Something about wanderers needing a place to fall apart quietly."
+    ]
+  },
   nomad:{
-    icon:"🏜️", name:"Desert Nomad",
-    lines:["The desert is vast. I have walked all of it. Twice.","Find a Sun Stone — the gold crystals the sun leaves in the sand after a storm."],
+    icon:"🏜️", name:"Rael, Desert Nomad",
+    lines:[
+      "You came from the north. I can tell — you're still walking like the ground will be soft.",
+      "The desert isn't empty. It's that what lives here doesn't want to be seen.",
+      "I've crossed this desert forty-seven times. Every crossing is different. The desert remembers.",
+      "Sun Stones form after storms — where lightning meets sand, something crystallises. Gold-coloured, warm to the touch.",
+      "The old shrine north of here... I've felt it pulling for years. Something wants to wake up.",
+      "Water, shade, and knowing when to stop. That's everything the desert will teach you, if you survive the lesson."
+    ],
     questOffer:"q3",
-    questOfferLines:["A Sun Stone? You carry one! Those are rare.","I will trade you this Desert Fragment for it. The stone is worth far more to me than gold."],
-    questReturnLines:["The deal is done. The Sun Stone is mine.","Here is the Desert Fragment, wanderer. And enough gold for your troubles.","Three fragments exist. The Shrine waits. You know this, even if you have forgotten why."]
+    questOfferLines:[
+      "Hold on — I've been waiting for someone heading deeper into the desert.",
+      "I'm looking for a Sun Stone. Gold crystal, warm to the touch — forms where lightning strikes sand after a storm.",
+      "I've searched three years and found nothing. But a fresh pair of eyes might have better luck.",
+      "Find one and bring it to me, and I'll trade you a Desert Fragment in return. Ancient thing, part of something larger.",
+      "The stone for the Fragment. That's the deal, if you want it."
+    ],
+    questActiveLines:[
+      "The Sun Stone is out there — gold crystal, warm to the touch. Look where the sand is scorched.",
+      "Still searching? Take your time. Rushing the desert is how people disappear."
+    ],
+    questReturnLines:[
+      "You have it. I can feel the warmth from here — that's the one.",
+      "Three years I looked. You found it in — actually, don't tell me how long it took. It'll sting.",
+      "Here. The Desert Fragment, as promised. And gold — enough that this doesn't feel like charity.",
+      "Three fragments, an old shrine, a purpose you haven't fully remembered yet. That's all I know.",
+      "The desert told me someone would come. I assumed it was being dramatic.",
+      "It wasn't."
+    ],
+    questMemoryLines:[
+      "The Sun Stone is where it belongs now. I won't tell you where. It's better you don't know.",
+      "Three years searching. You found it in a day or two. The desert has opinions about people, apparently.",
+      "You carry the Desert Fragment. I can feel it from here. The shrine is north — you know that already, don't you.",
+      "Funny thing — since the trade, the desert's been quieter. I don't know what that means. I'm choosing not to worry about it."
+    ]
   }
 };
 
@@ -123,8 +237,8 @@ var MAP_DEF = [
   ["T","NE","T","T","T","","","","","","","","","","","T","T","T","T","T","T","T","T","#","#","#","#","#","T","T","T","T","T","T","T","T","T","T","T","T"],
   ["T","","T","T","","","V","NI","V",".",".",".",".",".",".","","T","T","T","T","#","#","#",".",".",".",".","#","#","#","#","#","#","#","#","#","T","T","T","T"],
   ["T","","T","","",".","V","V","V",".",".",".",".",".",".","","T","T","#","#","#",".",".",".",".",".",".",".",".",".","#","#","#","#",".",".","T","T","T","T"],
-  ["T","","T","",".",".",".",".",".",".",".",".",".",".",".","","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".","#","#",".",".",".","T","T","T","T"],
-  ["T","","",".",".",".","","","","","","","V","NG",".",".","P","P","P",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T"],
+  ["T","","T","",".",".",".",".",".",".",".",".",".",".",".","","T","#","#",".",".",".",".",".",".",".",".",".",".",".",".","#","#",".",".",".","T","T","T","T"],
+  ["T","","",".",".",".","","","","","","","V","NG",".",".","","",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T"],
   ["T","",".","",".",".","","V","V","V","V","V","V","V","","","T","T","#",".",".","#","#",".",".",".",".","#","#","#",".",".",".",".","#","#","T","T","T","T"],
   ["T","",".",".",".","","","V","V","NM","V","V","V","V","",".","","T","#",".","#","#","#","#",".",".","#","#","#","#","#",".",".",".","#","#","T","T","T","T"],
   ["T","",".",".",".","","","V","V","V","V","V","V","V",".",".","","#","#",".","#","#","#","#",".",".","#","#","#","#","#","#",".",".",".","#","T","T","T","T"],
@@ -136,15 +250,15 @@ var MAP_DEF = [
   ["T","T","T","",".",".",".",".",".",".",".",".","","T","T","T","T","T","T","T","T","#","#","#","V","V","V","#","#","#","#","#","#","#",".",".",".","#","#","#"],
   ["T","T","T","T","",".",".",".",".",".",".",".","","T","T","T","T","T","T","T","T","T","T","#","#","#","#","#","#","#","#","#","#","S","S","S","S","#","#","#"],
   ["T","%","%","%","%","","","","","","","","","T","T","T","T","T","T","T","T","T","T","T","T","T","#","#","#","#","#","#","S","S","S","S","S","S","#","#"],
-  ["S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","#",".",".",".",".",".",".",".",".",".",".",".","#"],
-  ["S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T",".",".",".",".",".",".",".",".",".",".",".",".","T"],
-  ["S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".","T"],
-  ["S","S","NN","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".","T","T"],
-  ["S","S","S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","#",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T"],
-  ["S","S","S","S","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","#","#","#","#","#",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T"],
-  ["S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S",".",".",".",".",".",".",".",".",".",".",".",".","T","T","T","T","T"],
-  ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","S","S","S","S","S","T","T","T","T","T","T","T"],
-  ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","S","S","S","T","T","T","T","T","T","T","T"],
+  ["T","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","#","S","S","S","S","S","S","S","S","S","S","S","#"],
+  ["T","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","S","S","S","S","S","S","S","S","S","S","S","S","T"],
+  ["T","S","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","#","S","S","S","S","S","S","S","S","S","S","S","S","T"],
+  ["T","S","NN","S","S","S","S","S","S","S","S","S","T","T","T","T","T","T","#","#","#","#","#","#","#","#","S","S","S","S","S","S","S","S","S","S","S","S","T","T"],
+  ["T","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","T","T"],
+  ["T","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","T","T"],
+  ["T","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","S","T","S","S","T","T"],
+  ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","S","S","S","S","S","T","T","T","S","NI","T","T"],
+  ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","S","S","S","T","T","T","T","S","S","T","T"],
   ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
   ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
   ["T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T"],
@@ -373,18 +487,108 @@ var Audio = (function(){
     return{gainNode:g,_name:"inn",stop:function(){clearInterval(melIv);clearInterval(fireIv);nodes.forEach(function(n){try{n.stop();}catch(e){}});}};
   }
 
+  /* ── CUSTOM MUSIC SLOTS ────────────────────────────────────────────────────
+     Drop your own audio files into the assets/ folder and set the src here.
+     Supported formats: mp3, ogg, wav, m4a — anything the browser can decode.
+     Leave src as "" (empty string) to use the original procedural music.
+     Volume (0.0 – 1.0) lets you balance loud tracks against the game SFX.   */
+  var CUSTOM_TRACKS = {
+    forest:      { src: "", volume: 0.8 },
+    dark_forest: { src: "", volume: 0.8 },
+    desert:      { src: "", volume: 0.8 },
+    village:     { src: "", volume: 0.8 },
+    inn:         { src: "", volume: 0.8 }
+  };
+
+  /* Cached MediaElementSourceNodes — one per track name so we don't create
+     a new node each time the same biome is re-entered (browsers allow only
+     one MediaElementSource per HTMLAudioElement).                            */
+  var customSourceCache = {};
+
+  /* Tries to play a custom audio file for `name`.
+     Returns a music-object on success, null if the slot is empty or errors. */
+  function makeAudioEl(src){
+    /* Try every known way to construct an HTMLAudioElement */
+    var el;
+    try{ el = new window.Audio(src); } catch(e){}
+    if(!el){ try{ el = document.createElement("audio"); el.src=src; } catch(e){} }
+    return el || null;
+  }
+
+  function tryPlayCustom(name){
+    var slot = CUSTOM_TRACKS[name];
+    if(!slot || !slot.src || slot._broken) return null;
+    if(!ctx) return null;
+
+    try{
+      var cached = customSourceCache[name];
+
+      if(!cached){
+        var el = makeAudioEl(slot.src);
+        if(!el){
+          console.warn("[CustomMusic] Could not create audio element for: "+slot.src);
+          slot._broken = true; return null;
+        }
+        el.crossOrigin = "anonymous";
+        el.loop        = true;
+        el.preload     = "auto";
+        el.addEventListener("error", function(){
+          console.warn("[CustomMusic] Failed to load: "+slot.src+" — falling back to procedural music.");
+          slot._broken = true;
+        });
+        var sourceNode = ctx.createMediaElementSource(el);
+        cached = { el:el, sourceNode:sourceNode };
+        customSourceCache[name] = cached;
+      }
+
+      if(slot._broken) return null;
+
+      var g = ctx.createGain();
+      g.gain.value = 0.0001;
+      cached.sourceNode.connect(g);
+      g.connect(musicGain);
+      g.gain.linearRampToValueAtTime(slot.volume, ctx.currentTime + 2.0);
+
+      if(cached.el.ended || cached.el.currentTime === 0) cached.el.currentTime = 0;
+
+      var playPromise = cached.el.play();
+      if(playPromise){
+        playPromise.catch(function(err){
+          console.warn("[CustomMusic] play() blocked for '"+name+"': "+err.message);
+        });
+      }
+
+      return {
+        gainNode:  g,
+        _name:     name,
+        _isCustom: true,
+        stop: function(){
+          try{ cached.el.pause(); }catch(e){}
+          try{ cached.sourceNode.disconnect(); }catch(e){}
+          try{ g.disconnect(); }catch(e){}
+        }
+      };
+    } catch(e){
+      console.warn("[CustomMusic] Web Audio error for '"+name+"': "+e.message+" — falling back.");
+      return null;
+    }
+  }
+
   function playMusic(name){
     if(!ctx||!musicEnabled) return;
     if(currentMusic&&currentMusic._name===name) return;
     stopMusic(1.2);
-    var t;
-    if     (name==="menu")        t=musicMenu();
-    else if(name==="forest")      t=musicForest();
-    else if(name==="dark_forest") t=musicDarkForest();
-    else if(name==="desert")      t=musicDesert();
-    else if(name==="village")     t=musicVillage();
-    else if(name==="inn")         t=musicInn();
-    else if(name==="rain")        t=musicRain();
+    /* Try custom file first; fall back to procedural if slot is empty/broken */
+    var t = tryPlayCustom(name);
+    if(!t){
+      if     (name==="menu")        t=musicMenu();
+      else if(name==="forest")      t=musicForest();
+      else if(name==="dark_forest") t=musicDarkForest();
+      else if(name==="desert")      t=musicDesert();
+      else if(name==="village")     t=musicVillage();
+      else if(name==="inn")         t=musicInn();
+      else if(name==="rain")        t=musicRain();
+    }
     if(t) currentMusic=t;
   }
 
@@ -406,12 +610,95 @@ var Audio = (function(){
     },800);
   }
 
+  /* Explosive flash boom — used at the white-out moment of the outro */
+  function sfxExplosion(){
+    if(!ctx||!sfxEnabled) return; resume();
+    var t=ctx.currentTime;
+
+    /* ── SUB FOUNDATION: two massive sine bombs drop simultaneously ── */
+    [[60,12,1.6,2.4],[42,8,1.2,2.8]].forEach(function(p){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type="sine"; o.frequency.setValueAtTime(p[0],t); o.frequency.exponentialRampToValueAtTime(p[1],t+2.5);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(p[2],t+0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+p[3]);
+      o.connect(g); g.connect(sfxGain); o.start(t); o.stop(t+p[3]+0.1);
+    });
+
+    /* ── INITIAL SHOCKWAVE: stacked noise layers, each filtered differently ── */
+    [[1.8,0,0.06,9000],[1.4,0.01,0.20,4000],[1.1,0.03,0.55,1800],
+     [0.8,0.08,1.20,700],[0.5,0.30,2.00,300],[0.3,0.80,2.50,120]].forEach(function(p){
+      noise(p[0],t+p[1],p[2],p[3]);
+    });
+
+    /* ── TEARING APART: sawtooth sweeps — like reality ripping at the seams ── */
+    [[280,18,0.5],[220,14,0.6],[340,20,0.45],[160,10,0.7],[400,22,0.4]].forEach(function(p,i){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type="sawtooth"; o.frequency.setValueAtTime(p[0],t+i*0.04);
+      o.frequency.exponentialRampToValueAtTime(p[1],t+i*0.04+p[2]);
+      g.gain.setValueAtTime(0.5,t+i*0.04); g.gain.exponentialRampToValueAtTime(0.0001,t+i*0.04+p[2]+0.05);
+      o.connect(g); g.connect(sfxGain); o.start(t+i*0.04); o.stop(t+i*0.04+p[2]+0.1);
+    });
+
+    /* ── STONE CRACKING: square wave mid-impacts scattered in time ── */
+    [[180,0,0.28],[260,0.05,0.22],[140,0.09,0.35],[320,0.13,0.18],[200,0.20,0.30],[380,0.28,0.20]].forEach(function(p){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type="square"; o.frequency.setValueAtTime(p[0],t+p[1]);
+      o.frequency.exponentialRampToValueAtTime(p[0]*0.25,t+p[1]+p[2]);
+      g.gain.setValueAtTime(0.38,t+p[1]); g.gain.exponentialRampToValueAtTime(0.0001,t+p[1]+p[2]);
+      o.connect(g); g.connect(sfxGain); o.start(t+p[1]); o.stop(t+p[1]+p[2]+0.05);
+    });
+
+    /* ── GLASS SHATTER CASCADE: high freqs staggered across 0.8 seconds ── */
+    [3400,5200,7800,9600,11200,4600,6800,8400,10400,12800].forEach(function(f,i){
+      var delay=i*0.07+Math.random()*0.06;
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type="sawtooth"; o.frequency.value=f*(0.85+Math.random()*0.3);
+      g.gain.setValueAtTime(0,t+delay); g.gain.linearRampToValueAtTime(0.20,t+delay+0.004);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+delay+0.08+Math.random()*0.14);
+      o.connect(g); g.connect(sfxGain); o.start(t+delay); o.stop(t+delay+0.3);
+    });
+
+    /* ── CHAOS POPS: random debris hits scattered over 2.5 seconds ── */
+    for(var d=0;d<18;d++){
+      (function(i){
+        var delay=Math.random()*2.5;
+        var freq=200+Math.random()*6000;
+        noise(0.15+Math.random()*0.35, t+delay, 0.025+Math.random()*0.08, freq);
+      })(d);
+    }
+
+    /* ── WIND HOWL: the void rushing in ── */
+    [[0.5,t+0.1,1.8,80],[0.4,t+0.3,1.4,60],[0.3,t+0.6,1.2,50]].forEach(function(p){
+      noise(p[0],p[1],p[2],p[3]);
+    });
+
+    /* ── METALLIC RING: pitched distorted tones — world structure groaning ── */
+    [[110,0.7,55,0,1.8],[165,0.5,40,0.1,1.4],[88,0.6,30,0.05,2.0]].forEach(function(p){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type="triangle"; o.frequency.setValueAtTime(p[0],t+p[3]);
+      o.frequency.exponentialRampToValueAtTime(p[2],t+p[3]+p[4]);
+      g.gain.setValueAtTime(0,t+p[3]); g.gain.linearRampToValueAtTime(p[1],t+p[3]+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+p[3]+p[4]);
+      o.connect(g); g.connect(sfxGain); o.start(t+p[3]); o.stop(t+p[3]+p[4]+0.1);
+    });
+
+    /* ── FINAL COLLAPSE: slow heavy crunch at 1 second in ── */
+    [[70,10,0.9],[50,8,1.0],[90,12,0.8]].forEach(function(p,i){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type="sawtooth"; o.frequency.setValueAtTime(p[0],t+1.0+i*0.06);
+      o.frequency.exponentialRampToValueAtTime(p[1],t+1.0+i*0.06+p[2]);
+      g.gain.setValueAtTime(0.55,t+1.0+i*0.06); g.gain.exponentialRampToValueAtTime(0.0001,t+1.0+i*0.06+p[2]);
+      o.connect(g); g.connect(sfxGain); o.start(t+1.0+i*0.06); o.stop(t+1.0+i*0.06+p[2]+0.1);
+    });
+    noise(0.7,t+1.0,1.2,600); noise(0.5,t+1.1,1.0,200); noise(0.4,t+1.3,0.8,100);
+  }
+
   return{
     init,resume,
     _ctx:function(){ return ctx; },
     sfxStep,sfxTypeChar,sfxDialogOpen,sfxDialogNext,sfxDialogClose,
     sfxShopOpen,sfxBuy,sfxBuyFail,sfxBiomeChange,
-    sfxGameStart,sfxMenuHover,sfxMenuClick,sfxItemFind,sfxQuestComplete,sfxSleep,sfxShrine,
+    sfxGameStart,sfxMenuHover,sfxMenuClick,sfxItemFind,sfxQuestComplete,sfxSleep,sfxShrine,sfxExplosion,
     playMusic,stopMusic,
     toggleMusic:function(){ musicEnabled=!musicEnabled; if(!musicEnabled) stopMusic(0.4); else { var n=currentMap==="inn"?"inn":isRaining?"rain":lastBiome||"forest"; playMusic(n); } return musicEnabled; },
     toggleSfx:function(){ sfxEnabled=!sfxEnabled; return sfxEnabled; }
@@ -632,7 +919,7 @@ function drawBedSprite(canvas){
 }
 
 /* -ENERGY SYSTEM- */
-var ENERGY_MAX=20000, energy=2000;
+var ENERGY_MAX=120, energy=120;
 function updateEnergyBar(){
   var bar=G("energyBar"), txt=G("energyText"); if(!bar) return;
   var pct=Math.max(0,energy/ENERGY_MAX*100);
@@ -647,6 +934,9 @@ function consumeEnergy(){
 
 /* -INN SYSTEM- */
 var currentMap="world";
+/* Tracks which innkeeper tile (col, row) the player entered the inn from,
+   so we can place them correctly on exit. */
+var innEntryNpcPos={c:7,r:2}; /* default: forest innkeeper */
 var INN_MAP_DEF=[
   ["W","W","W","W","W","W","W","W","W","W","W","W"],
   ["W","F","F","F","F","F","F","F","F","F","F","W"],
@@ -740,6 +1030,16 @@ function fadeIn(){
 }
 
 function enterInn(){
+  /* Find the innkeeper NPC tile the player is adjacent to, so we can
+     return them to the correct position when they leave. */
+  var dirs=[{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
+  for(var d=0;d<dirs.length;d++){
+    var nc=player.x+dirs[d].dx, nr=player.y+dirs[d].dy;
+    if(nr>=0&&nr<GRID_H&&nc>=0&&nc<GRID_W&&gameMap[nr][nc].npc==="innkeeper"){
+      innEntryNpcPos={c:nc,r:nr};
+      break;
+    }
+  }
   fadeOut(function(){
     currentMap="inn"; player.x=5; player.y=7;
     buildInnGrid(); Audio.playMusic("inn"); updateHUD();
@@ -748,9 +1048,25 @@ function enterInn(){
   });
 }
 function exitInn(){
+  /* Place the player relative to the innkeeper they entered from:
+     - Forest innkeeper (row 2, col 7): player appears BELOW (row 3, col 7)
+     - Desert innkeeper (row 24, col 37): player appears ABOVE (row 23, col 37) */
+  var isDesertInn=(innEntryNpcPos.r>=17);
+  var exitX, exitY;
+  if(isDesertInn){
+    /* above the desert innkeeper */
+    exitX=innEntryNpcPos.c;
+    exitY=innEntryNpcPos.r-1;
+  } else {
+    /* below the forest innkeeper */
+    exitX=innEntryNpcPos.c;
+    exitY=innEntryNpcPos.r+1;
+  }
   fadeOut(function(){
-    currentMap="world"; player.x=3; player.y=7;
-    buildGrid(); var tile=gameMap[player.y]&&gameMap[player.y][player.x];
+    currentMap="world";
+    player.x=exitX; player.y=exitY;
+    buildGrid();
+    var tile=gameMap[player.y]&&gameMap[player.y][player.x];
     if(isRaining) Audio.playMusic("rain");
     else Audio.playMusic(tile?tile.biome:"forest");
     updateHUD(); setTimeout(fadeIn,80);
@@ -766,7 +1082,6 @@ function sleepInBed(){
     /* rain chance — 1 in 3 days */
     var willRain=Math.random()<0.33;
     if(willRain!==isRaining){ isRaining=willRain; }
-    saveGame();
     var msg=G("sleepMsg");
     if(msg){
       msg.querySelector(".sleep-day").textContent="Day "+dayNumber+(isRaining?" 🌧":"");
@@ -1001,11 +1316,27 @@ function updateHUD(){
   G("hudBiome").textContent=names[tile.biome]||tile.biome;
 
   if(tile.biome!==lastBiome){
+    var prevBiome=lastBiome;
     lastBiome=tile.biome;
     var msgs={forest:"You enter the Forest. Pine and poor decisions.",dark_forest:"The Dark Forest swallows the light. Something hums.",desert:"The Desert. Endless sand. Endless existential dread.",village:"The Village. Civilisation! Sort of."};
     if(msgs[tile.biome]) showToast(msgs[tile.biome]);
     Audio.sfxBiomeChange(tile.biome);
-    if(!isRaining) Audio.playMusic(tile.biome);
+    if(isRaining && tile.biome==="desert"){
+      /* rain doesn't follow you into the desert — fade it out visually */
+      var rCanvas=G("rainCanvas"); var rTint=document.querySelector(".rain-tint");
+      rCanvas.classList.remove("active"); if(rTint) rTint.classList.remove("active");
+      /* wait for the 1.5s CSS opacity transition before killing the animation */
+      setTimeout(function(){ stopRain(); },1600);
+      Audio.playMusic("desert");
+    } else if(isRaining && prevBiome==="desert" && tile.biome!=="desert"){
+      /* leaving the desert while rain is active — restore rain visuals */
+      var rCanvas=G("rainCanvas"); var rTint=document.querySelector(".rain-tint");
+      rCanvas.classList.add("active"); if(rTint) rTint.classList.add("active");
+      startRain();
+      Audio.playMusic("rain");
+    } else if(!isRaining){
+      Audio.playMusic(tile.biome);
+    }
   }
 
   /* mini avatar */
@@ -1017,7 +1348,98 @@ function updateHUD(){
 
 /* -DAY SYSTEM- */
 function advanceStep(){
-  stepCount++; /* stepCount still tracked but doesn't advance days */
+  stepCount++;
+  checkRandomEncounter();
+}
+
+/* -RANDOM ENCOUNTERS- */
+var ENCOUNTER_COOLDOWN = 0;   /* steps before next encounter can fire */
+var ENCOUNTER_MIN_STEPS = 8;  /* minimum steps between any encounter   */
+
+var ENCOUNTERS = {
+  forest:[
+    { w:8,  fn: function(){ showEncounterToast("🍄","You nearly step on a cluster of red-capped mushrooms. They smell faintly of burnt wood and bad ideas."); } },
+    { w:7,  fn: function(){ showEncounterToast("🪶","A black feather drifts down from the canopy and lands at your feet. There's nothing above you. There are no birds."); } },
+    { w:6,  fn: function(){ showEncounterToast("📜","A scrap of paper is pinned to a tree with a rusted knife. It reads: 'Turn back.' Someone has crossed that out and written: 'No, seriously.'"); } },
+    { w:5,  fn: function(){ showEncounterToast("🐾","You find tracks in the mud. Four-toed, large. Whatever made them was walking in a very deliberate straight line."); } },
+    { w:4,  fn: function(){ showEncounterToast("🌿","The trees thin for a moment and you see something in the distance. Then the trees close again. You're not sure what you saw."); } },
+    { w:3,  fn: function(){ goldFind(5,12,"💰","You find a small purse half-buried in moss."); } },
+    { w:2,  fn: function(){ hpFind(10,20,"🍃","You chew on some leaves out of curiosity. Surprisingly, your wounds feel a little better. Please don't make a habit of this."); } },
+    { w:2,  fn: function(){ showEncounterToast("🔍","Someone has carved an arrow into a tree trunk. It points north. There is nothing north but more trees. You understand completely."); } }
+  ],
+  dark_forest:[
+    { w:8,  fn: function(){ showEncounterToast("🌑","The darkness here feels deliberate. Like it's watching what you do with it."); } },
+    { w:7,  fn: function(){ showEncounterToast("📝","A note nailed to a dead tree: 'The hermit is lying about the fire.' No signature. The ink is still wet."); } },
+    { w:6,  fn: function(){ showEncounterToast("🦴","You find a boot. Just one. In good condition. You don't pick it up."); } },
+    { w:6,  fn: function(){ showEncounterToast("🔔","Something chimes. Once. You stop walking. It doesn't happen again."); } },
+    { w:5,  fn: function(){ showEncounterToast("👁️","You have the very strong feeling you are being counted."); } },
+    { w:4,  fn: function(){ showEncounterToast("🪵","A piece of Darkwood sits in the middle of the path. There are no trees nearby. It's already cut to size."); } },
+    { w:3,  fn: function(){ goldFind(8,18,"💰","A coin pouch hangs from a low branch, swaying with no wind."); } },
+    { w:2,  fn: function(){ showEncounterToast("🌀","You walk in what you are certain is a straight line. You end up exactly where you started. You decide not to think about it."); } }
+  ],
+  desert:[
+    { w:8,  fn: function(){ showEncounterToast("☀️","The heat does something to distances. That rock has been getting further away for ten minutes."); } },
+    { w:7,  fn: function(){ showEncounterToast("🦴","Bleached bones half-buried in sand. A sword hilt protrudes nearby. The sword is gone. The hilt remains, as a warning or a formality."); } },
+    { w:6,  fn: function(){ showEncounterToast("📜","A scrap of cloth with a single sentence: 'The nomad has walked this desert more times than he admits. Ask him why he keeps coming back.'"); } },
+    { w:5,  fn: function(){ showEncounterToast("💧","You find a sealed waterskin half-buried in the sand. It's empty. But it's a nice waterskin."); } },
+    { w:5,  fn: function(){ showEncounterToast("🌵","Something is carved into the sand, elaborate and deliberate. The wind takes it before you finish reading."); } },
+    { w:4,  fn: function(){ goldFind(10,22,"💰","A small lockbox, unlocked, half-buried — the gold inside is sun-warm."); } },
+    { w:3,  fn: function(){ hpFind(8,15,"🌵","You find a desert plant with waxy leaves. You eat some. Questionable decision. Your body seems fine with it."); } },
+    { w:2,  fn: function(){ showEncounterToast("👣","Your own footprints lead directly back to you. You haven't turned around once."); } }
+  ],
+  village:[
+    { w:9,  fn: function(){ showEncounterToast("🐔","A chicken stares at you with unusual intensity. You break eye contact first."); } },
+    { w:7,  fn: function(){ showEncounterToast("👧","A child points at you and says something to another child. They both laugh. You'll never know what it was."); } },
+    { w:6,  fn: function(){ showEncounterToast("🍎","Someone has left a basket of apples by the road with a sign: 'Free. No, really.' You don't trust it. Probably wise."); } },
+    { w:5,  fn: function(){ showEncounterToast("📋","A wanted poster on a wall. The sketch looks like you, but vaguer. The crime is listed as 'General Wandering.'"); } },
+    { w:4,  fn: function(){ showEncounterToast("🎶","Someone nearby is humming a tune you almost recognise. By the time you place it, they're gone."); } },
+    { w:3,  fn: function(){ goldFind(3,8,"💰","A coin rolls out from between cobblestones and stops at your foot."); } },
+    { w:2,  fn: function(){ hpFind(12,25,"🥣","A villager hands you a bowl of stew without explanation and walks away. It's warm. You feel better."); } }
+  ]
+};
+
+function showEncounterToast(icon, msg){
+  var old=document.querySelector(".encounter-toast"); if(old) old.remove();
+  var t=document.createElement("div");
+  t.className="encounter-toast";
+  t.innerHTML='<span class="enc-icon">'+icon+'</span><span class="enc-msg">'+msg+'</span>';
+  document.body.appendChild(t);
+  setTimeout(function(){ t.classList.add("enc-visible"); }, 30);
+  setTimeout(function(){ t.classList.remove("enc-visible"); setTimeout(function(){ if(t.parentNode) t.remove(); }, 500); }, 5500);
+}
+
+function goldFind(min, max, icon, msg){
+  var amount=min+Math.floor(Math.random()*(max-min+1));
+  player.gold+=amount;
+  updateHUD();
+  showEncounterToast(icon, msg+" (+"+amount+"g)");
+}
+
+function hpFind(min, max, icon, msg){
+  var amount=min+Math.floor(Math.random()*(max-min+1));
+  player.hp=Math.min(player.maxHp, player.hp+amount);
+  updateHUD();
+  showEncounterToast(icon, msg+" (+"+amount+" HP)");
+}
+
+function checkRandomEncounter(){
+  if(!gameActive||currentMap!=="world") return;
+  if(ENCOUNTER_COOLDOWN>0){ ENCOUNTER_COOLDOWN--; return; }
+  var tile=gameMap[player.y]&&gameMap[player.y][player.x];
+  if(!tile) return;
+  var biome=tile.biome;
+  var pool=ENCOUNTERS[biome]; if(!pool) return;
+  /* ~1 in 14 chance per step */
+  if(Math.random()>0.01) return;
+  /* weighted pick */
+  var total=0; pool.forEach(function(e){ total+=e.w; });
+  var roll=Math.random()*total;
+  var cum=0;
+  for(var i=0;i<pool.length;i++){
+    cum+=pool[i].w;
+    if(roll<cum){ pool[i].fn(); break; }
+  }
+  ENCOUNTER_COOLDOWN=ENCOUNTER_MIN_STEPS;
 }
 
 function showDayBanner(msg){
@@ -1203,7 +1625,7 @@ function handleKeyDown(e){
   advanceStep();
   consumeEnergy();
 
-  var moveDelay=energy>0?140:250;
+  var moveDelay=energy>0?140:400;
   clearTimeout(moveTimer);
   moveTimer=setTimeout(function(){
     playerMoving=false;
@@ -1222,16 +1644,41 @@ function startDialog(npcKey){
   if(npc.questOffer){
     var q=QUESTS[npc.questOffer];
     if(q&&!questState.active[q.id]&&!questState.completed[q.id]){
+      /* quest not yet offered — lead with first idle line then pitch */
       lines=npc.lines.slice(0,1).concat(npc.questOfferLines||[]);
       dialogState.pendingQuestOffer=q.id;
-    } else if(q&&questState.active[q.id]&&q.step===1){
-      /* check return conditions */
+    } else if(q&&questState.active[q.id]){
+      /* quest active — check if player can return */
       var canReturn=false;
       if(q.id==="q1"&&questState.inventory.indexOf("satchel")!==-1) canReturn=true;
       if(q.id==="q2"&&(questState.collect.darkwood||0)>=3) canReturn=true;
       if(q.id==="q3"&&questState.inventory.indexOf("sunstone")!==-1) canReturn=true;
-      if(canReturn){ lines=npc.questReturnLines||npc.lines.slice(); dialogState.pendingQuestReturn=q.id; }
+      if(canReturn){
+        lines=npc.questReturnLines||npc.lines.slice();
+        dialogState.pendingQuestReturn=q.id;
+      } else if(npc.questActiveLines&&npc.questActiveLines.length){
+        /* still hunting — give a nudge line, rotate through them */
+        if(!npc._activeIdx) npc._activeIdx=0;
+        lines=[npc.questActiveLines[npc._activeIdx%npc.questActiveLines.length]];
+        npc._activeIdx++;
+      }
+    } else if(q&&questState.completed[q.id]){
+      /* quest done — first few visits use memory lines, then rotate idle */
+      if(!npc._memIdx) npc._memIdx=0;
+      var memPool=npc.questMemoryLines&&npc.questMemoryLines.length?npc.questMemoryLines:npc.lines;
+      if(npc._memIdx<memPool.length){
+        lines=[memPool[npc._memIdx]]; npc._memIdx++;
+      } else {
+        if(!npc._idleIdx) npc._idleIdx=0;
+        var idlePool=npc.lines; var idleI=npc._idleIdx%idlePool.length;
+        lines=[idlePool[idleI]]; npc._idleIdx++;
+      }
     }
+  } else {
+    /* NPCs with no quest also rotate lines on repeat visits */
+    if(!npc._idleIdx) npc._idleIdx=0;
+    var idlePool=npc.lines; var idleI=npc._idleIdx%idlePool.length;
+    lines=[idlePool[idleI]]; npc._idleIdx++;
   }
 
   dialogState.npc=npc; dialogState.lines=lines; dialogState.idx=0;
@@ -1489,7 +1936,7 @@ function buildHomeGrid(){
 }
 
 function startOutro(){
-  /* overlay for cutscene effects */
+  /* Overlay canvas for cutscene effects — sits above the world grid */
   var cut=document.createElement("div"); cut.id="outroCutscene";
   cut.style.cssText="position:fixed;inset:0;z-index:300;pointer-events:none;overflow:hidden;";
   document.body.appendChild(cut);
@@ -1500,6 +1947,7 @@ function startOutro(){
   cut.appendChild(cc);
   var ctx=cc.getContext("2d");
 
+  /* Title card — invisible until phase 4 */
   var card=document.createElement("div");
   card.style.cssText="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0;transition:opacity 1.2s ease;pointer-events:none;";
   cut.appendChild(card);
@@ -1512,7 +1960,7 @@ function startOutro(){
   addLine("","font-size:.5rem;");
   addLine("You are home.","font-family:'Cinzel',serif;font-size:clamp(1rem,2.5vw,1.6rem);color:#ffd080;letter-spacing:6px;text-shadow:0 0 20px #ffd080;");
 
-  /* particles */
+  /* Particles for phase 0 */
   var particles=[];
   for(var i=0;i<120;i++){
     particles.push({
@@ -1523,24 +1971,35 @@ function startOutro(){
     });
   }
 
-  var phase=0, phaseT=0, flashOpacity=0, blackOpacity=0, animId;
+  /*
+    PHASE 0  (120 frames): rings + particles orbit centre + screen shake
+    PHASE 1  (35 frames):  white flash fills screen; explosion SFX fires on first frame
+    PHASE 2  (1 frame):    swap to home map while fully white; home is now behind white
+    PHASE 3  (60 frames):  fade white OUT, revealing the home map beneath
+    PHASE 4  (340 frames): show title card over the now-visible home map
+    PHASE 5  (50 frames):  fade card + canvas overlay out; re-enable movement
+  */
+  var phase=0, phaseT=0, animId;
   var shakeAmt=0;
+  var explosionFired=false;
+  var homeSwapped=false;
 
   function frame(){
     animId=requestAnimationFrame(frame);
     phaseT++;
     ctx.clearRect(0,0,cc.width,cc.height);
 
+    /* Screen shake — applied to world grid during phase 0 */
     if(shakeAmt>0.2){
       var sx=(Math.random()-0.5)*shakeAmt*2, sy=(Math.random()-0.5)*shakeAmt*2;
       var grd=G("worldGrid"); if(grd) grd.style.transform="translate("+(camX+sx)+"px,"+(camY+sy)+"px)";
       shakeAmt*=0.85;
     }
 
-    /* phase 0: particles charge + rings, screen shakes */
+    /* ── PHASE 0: rings + particles charging toward centre + growing shake ── */
     if(phase===0){
       var progress=phaseT/120;
-      shakeAmt=progress*20;
+      shakeAmt=progress*22;
       var cx2=cc.width/2, cy2=cc.height/2;
       for(var ri=0;ri<3;ri++){
         var rr=(phaseT*2.5+ri*50)%200;
@@ -1559,50 +2018,55 @@ function startOutro(){
       if(phaseT>=120){ phase=1; phaseT=0; shakeAmt=0; }
     }
 
-    /* phase 1: white flash */
+    /* ── PHASE 1: white flash — explosion SFX fires on very first frame ── */
     else if(phase===1){
-      flashOpacity=Math.min(1,phaseT/18);
-      ctx.fillStyle="rgba(255,255,220,"+flashOpacity+")";
+      if(!explosionFired){
+        explosionFired=true;
+        Audio.sfxExplosion&&Audio.sfxExplosion();
+      }
+      var wOpacity=Math.min(1, phaseT/18);
+      ctx.fillStyle="rgba(255,255,220,"+wOpacity+")";
       ctx.fillRect(0,0,cc.width,cc.height);
-      if(phaseT>=35){ phase=2; phaseT=0; }
-    }
-
-    /* phase 2: fade to black, swap map while hidden */
-    else if(phase===2){
-      blackOpacity=Math.min(1,phaseT/30);
-      ctx.fillStyle="rgba(0,0,0,"+blackOpacity+")";
-      ctx.fillRect(0,0,cc.width,cc.height);
-      if(phaseT===30){
-        /* swap to home map while fully black */
+      /* At full white (frame 18+) swap to home map so it's ready behind the white */
+      if(phaseT>=18 && !homeSwapped){
+        homeSwapped=true;
         buildHomeMap(); currentMap="home";
         player.x=6; player.y=5;
         buildHomeGrid(); updateHUD();
         Audio.stopMusic&&Audio.stopMusic(0.1);
         setTimeout(function(){ Audio.playMusic&&Audio.playMusic("inn"); },600);
       }
-      if(phaseT>=55){ phase=3; phaseT=0; }
+      /* Hold fully white for ~2 seconds (18 ramp-up + 120 hold ≈ 2.3s at 60fps) */
+      if(phaseT>=138){ phase=3; phaseT=0; }
     }
 
-    /* phase 3: hold black, fade in title card */
+    /* ── PHASE 3: fade white OUT revealing the home map beneath ── */
     else if(phase===3){
-      var holdOpacity=Math.max(0,1-phaseT/50);
-      ctx.fillStyle="rgba(0,0,0,"+holdOpacity+")";
+      var wFade=Math.max(0, 1-(phaseT/60));
+      ctx.fillStyle="rgba(255,255,220,"+wFade+")";
       ctx.fillRect(0,0,cc.width,cc.height);
-      if(phaseT===20) card.style.opacity="1";
-      if(phaseT>=360){ phase=4; phaseT=0; card.style.transition="opacity 0.8s ease"; card.style.opacity="0"; }
+      if(phaseT>=60){ phase=4; phaseT=0; }
     }
 
-    /* phase 4: fade out canvas overlay entirely */
+    /* ── PHASE 4: hold — show title card over the home map ── */
     else if(phase===4){
+      /* canvas is now transparent so home map shows through */
+      if(phaseT===20) card.style.opacity="1";
+      if(phaseT>=340){ phase=5; phaseT=0; card.style.transition="opacity 0.8s ease"; card.style.opacity="0"; }
+    }
+
+    /* ── PHASE 5: fade out canvas overlay, re-enable movement ── */
+    else if(phase===5){
       var fo=Math.max(0,1-phaseT/50);
       if(fo<=0){
         cancelAnimationFrame(animId);
         if(cut.parentNode) cut.parentNode.removeChild(cut);
         var grd2=G("worldGrid"); if(grd2) grd2.style.transform="translate("+camX+"px,"+camY+"px)";
-        gameActive=true; /* re-enable movement in home */
-        setTimeout(showEndScreen, 400);
+        gameActive=true;
+        setTimeout(showEndScreen,400);
         return;
       }
+      /* slight dark vignette while fading — canvas is otherwise clear */
       ctx.fillStyle="rgba(0,0,0,"+fo+")"; ctx.fillRect(0,0,cc.width,cc.height);
     }
   }
@@ -1766,44 +2230,6 @@ function openInventory(){
   G("invOverlay").style.display="flex";
 }
 
-/* -SAVE/LOAD- */
-function saveGame(){
-  try{
-    var equipIds={};
-    ["weapon","chest","helmet","boots","item"].forEach(function(s){ equipIds[s]=player.equipment[s]?player.equipment[s].id:null; });
-    localStorage.setItem("wf_save",JSON.stringify({
-      name:player.name,cls:player.cls,
-      skinIdx:player.skinIdx,hairIdx:player.hairIdx,outfitIdx:player.outfitIdx,
-      x:player.x,y:player.y,hp:player.hp,maxHp:player.maxHp,
-      atk:player.atk,def:player.def,spd:player.spd,
-      gold:player.gold,owned:player.owned.slice(),equipIds,
-      dayNumber,isRaining,stepCount,energy:energy,
-      questState:JSON.parse(JSON.stringify(questState)),
-      mapItems:MAP_ITEMS.map(function(m){return{r:m.r,c:m.c,id:m.id,found:m.found};})
-    }));
-  }catch(e){}
-}
-function loadGame(){
-  try{
-    var raw=localStorage.getItem("wf_save"); if(!raw) return false;
-    var d=JSON.parse(raw);
-    player.name=d.name||"Wanderer"; player.cls=d.cls||"knight";
-    player.skinIdx=d.skinIdx||0; player.hairIdx=d.hairIdx||0; player.outfitIdx=d.outfitIdx||0;
-    player.x=typeof d.x==="number"?d.x:6; player.y=typeof d.y==="number"?d.y:5;
-    player.hp=d.hp||100; player.maxHp=d.maxHp||100;
-    player.atk=d.atk||15; player.def=d.def||10; player.spd=d.spd||8;
-    player.gold=d.gold||50; player.owned=d.owned||[];
-    player.equipment={weapon:null,chest:null,helmet:null,boots:null,item:null};
-    if(d.equipIds) Object.keys(d.equipIds).forEach(function(slot){ var eid=d.equipIds[slot]; if(!eid) return; for(var i=0;i<ALL_ITEMS.length;i++) if(ALL_ITEMS[i].id===eid){player.equipment[slot]=ALL_ITEMS[i];break;} });
-    dayNumber=d.dayNumber||1; isRaining=d.isRaining||false; stepCount=d.stepCount||0;
-    energy=typeof d.energy==="number"?d.energy:ENERGY_MAX;
-    if(d.questState){questState.active=d.questState.active||{};questState.completed=d.questState.completed||{};questState.inventory=d.questState.inventory||[];questState.collect=d.questState.collect||{};}
-    if(d.mapItems) d.mapItems.forEach(function(saved){var m=getMapItem(saved.r,saved.c);if(m&&saved.id===m.id)m.found=saved.found;});
-    Object.keys(questState.active).forEach(function(qid){if(QUESTS[qid])QUESTS[qid].locked=false;});
-    return true;
-  }catch(e){return false;}
-}
-
 /* -PARTICLES (menu)- */
 function spawnParticles(){
   var c=G("menuParticles");
@@ -1887,15 +2313,13 @@ function startGame(isNewGame){
   var rc=G("rainCanvas");
   rc.width =container.clientWidth;
   rc.height=container.clientHeight;
+  /* re-center camera now that the container has real pixel dimensions */
+  updateCamera(false);
   updateHUD(); updateEnergyBar();
   Audio.sfxGameStart();
   if(isRaining){ toggleRain(true); }
   else { Audio.playMusic("forest"); }
-  if(!isNewGame){
-    setTimeout(function(){ showToast("Welcome back, "+player.name+"."); },300);
-  }
-  showIntro(!!isNewGame);
-  setInterval(saveGame,30000);
+  showIntro(true);
 }
 
 /* -INIT- */
@@ -1908,12 +2332,6 @@ document.addEventListener("DOMContentLoaded",function(){
 
   G("btnNewGame").addEventListener("click",function(){
     Audio.sfxMenuClick(); showScreen("avatar");
-  });
-
-  G("btnContinue").addEventListener("click",function(){
-    Audio.sfxMenuClick();
-    if(loadGame()){ startGame(false); }
-    else showToast("No save found — start a New Game!");
   });
 
   G("btnEnterWorld").addEventListener("click",function(){
